@@ -33,14 +33,11 @@ def BFS(strat_ry, start_rx, start_by, start_bx, board, visit):
         if cur_count >10:
             return ret
 
-
         #--------------- 진행 문 ---------------#
         for i in range(4): #모든 방향으로 뻗어가는 Case를 (4)
 
-            next_ry = cur_ry
-            next_rx = cur_rx
-            next_by = cur_by
-            next_bx = cur_bx
+            next_ry = cur_ry; next_rx = cur_rx
+            next_by = cur_by; next_bx = cur_bx
 
             #빨간공
             while True: #다음 node로 넘어가는 부분
@@ -73,11 +70,12 @@ def BFS(strat_ry, start_rx, start_by, start_bx, board, visit):
                 elif board[next_by][next_bx] == 'O': #이건 O에 떨어졌을때를 대비하는거
                     break
 
-                # 문제의 조건에서 Red가 'O'로 빠지면 성공 return, Blue red가 같이 빠지면 return ret=-1, count >10 return ret=-1
-                if board[cur_ry][cur_rx] == 'O' and board[cur_by][cur_bx] != 'O':
-                    return cur_count
-                if board[cur_by][cur_bx] == 'O':  # Solution에서는 이 조건이 없는데?
-                    continue
+            #이게 여기에 왜 들어가는거지 맨 앞에 들어가는거랑 무슨 차이인가?
+            # 문제의 조건에서 Red가 'O'로 빠지면 성공 return, Blue red가 같이 빠지면 return ret=-1, count >10 return ret=-1
+            if board[next_by][next_bx] == 'O':  # Solution에서는 이 조건이 없는데?
+                continue
+            if board[next_ry][next_rx] == 'O' and board[next_by][next_bx] != 'O': #만약 11번째 하다가 되면 +1때문에 11이 튀어나오겠네 사실상 10이라서 나가리일텐데
+                return cur_count+1
 
             #--------------- 예외 조건 ---------------#
             if board[next_ry][next_rx] != 'O' and board[next_by][next_bx] != 'O': #둘다 구멍에 빠진게 아닐때
@@ -95,9 +93,7 @@ def BFS(strat_ry, start_rx, start_by, start_bx, board, visit):
 
             if visit[next_ry][next_rx][next_by][next_bx] == False:
                 visit[next_ry][next_rx][next_by][next_bx] = True
-
                 next_count = 1 + cur_count
-
                 Queue.append([next_ry,next_rx, next_by,next_bx, next_count])
 
     return ret
@@ -129,5 +125,8 @@ for r in range(N):
 
 
 ret = BFS(start_ry, start_rx, start_by,start_bx, board, visit)
+if ret >10:
+    print(-1)
 
-print(ret)
+else:
+    print(ret)
