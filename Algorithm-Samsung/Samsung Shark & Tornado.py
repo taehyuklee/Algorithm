@@ -101,17 +101,6 @@ while x>-1 and y>-1:
     spread(y, x, turn, board[y][x])
     #print("y,x", y,x)
     #print(board)
-    if dir ==0: #"Left"
-        sand_board = copy.deepcopy(sand_left_rate)
-
-    elif dir ==1: #"down"
-        sand_board = copy.deepcopy(sand_down_rate)
-
-    elif dir ==2: #"right"
-        sand_board = copy.deepcopy(sand_right_rate)
-
-    elif dir ==3: #"up"
-
 
 
     if cur_depth == ref_depth:
