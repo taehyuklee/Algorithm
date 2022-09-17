@@ -1,4 +1,4 @@
-package SamsungStartTaxi;
+package StartTaxiTest;
 
 import java.util.*;
 import java.io.*;
@@ -17,7 +17,7 @@ class Taxi{
 
 class Passenger{
 	
-	int startX, startY, endX, endY, index;
+	int startX, startY, endX, endY, index, dist;
 
 	public Passenger(int startX, int startY, int endX, int endY, int index) {
 		this.startX = startX;
@@ -29,12 +29,16 @@ class Passenger{
 
 	@Override
 	public String toString() {
-		return "Passenger [startX=" + startX + ", startY=" + startY + ", endX=" + endX + ", endY=" + endY + "]";
+		return "Passenger [startX=" + startX + ", startY=" + startY + ", endX=" + endX + ", endY=" + endY + ", index="
+				+ index + ", dist=" + dist + "]";
 	}
+
 
 }
 
-public class SamsungStartTaxi {
+
+
+public class StartTaxiTest {
 	
 	
 	static int [][] map = new int[21][21];
@@ -42,6 +46,8 @@ public class SamsungStartTaxi {
 	static int passStartX, passStartY, passEndX, passEndY;
 	static int N, M, fuel;
 	static List<Passenger> passList = new ArrayList<>();
+	static Map<Integer, Passenger> passMap = new HashMap<>();
+	static List<Passenger> waitList = new ArrayList<>();
 	
 	public static void print2D(int[][] arr) {
 		for(int i=1; i<N+1; i++) {
@@ -73,10 +79,8 @@ public class SamsungStartTaxi {
 //			Arrays.fill(visit[i], false);
 //		}
 		
-		System.out.println(Arrays.deepToString(visit));
-		
-		List<Passenger> waitList = new ArrayList<>();
-		Passenger passenger= passList.remove(0);
+		//System.out.println(Arrays.deepToString(visit));
+		//Passenger passenger= passList.remove(0);
 		
 		//첫 위치에 있는 taxi 객체를 만들어서
 		Taxi taxi = new Taxi(taxiX, taxiY);
@@ -88,7 +92,7 @@ public class SamsungStartTaxi {
 		int[] dx = {-1,1,0,0};
 		int[] dy = {0,0,-1,1};
 		
-		int consumes = 0;
+		int movement = 0;
 		
 		while(!q.isEmpty()) {
 			
@@ -97,24 +101,48 @@ public class SamsungStartTaxi {
 			taxiY = tempTaxi.taxiY;
 			int newTaxiX = 0;
 			int newTaxiY = 0;
+			boolean go = false; //count를 해야할지 말아야 할지에 대한 분기처
 			
-			for(int i=0; i<4; i++) {
-				newTaxiX = taxiX + dx[i];
-				newTaxiY = taxiY + dy[i];
-				
-				if(newTaxiX>=1 && newTaxiX<N+1 && newTaxiY>=1 && newTaxiY<N+1 && visit[newTaxiX][newTaxiY] == false) {
-					if(map[newTaxiX][newTaxiY] == 0) {
-						visit[newTaxiX][newTaxiY] = true;
-						Taxi newTaxi = new Taxi(newTaxiX, newTaxiY);
-						q.add(newTaxi);
-						consumes+=1;
-					}
+			//만약 그 위치가 승객이 있다면 
+			if(passMap.get(map[taxiX][taxiY]) !=null) {
+				if(passMap.get(map[taxiX][taxiY]).index >1) {
+					
+					//승객이 존재한다는 의미 -> 태워야 한다
+					passMap.get(map[taxiX][taxiY]).dist = movement;
+					waitList.add(passMap.get(map[taxiX][taxiY]));
+					passMap.remove(map[taxiX][taxiY]);
 				}
 			}
-			System.out.println(consumes);
+			
+			//waitList에 사람이 없을때만 그대로 진행
+			if(waitList.size() ==0) { //이런 조건에서 헷갈리면 안된다 <- 어떻게하면 실수나 생각의 시간을 줄일수 있을까?
+				for(int i=0; i<4; i++) {
+					newTaxiX = taxiX + dx[i];
+					newTaxiY = taxiY + dy[i];
+					
+					if(newTaxiX>=1 && newTaxiX<N+1 && newTaxiY>=1 && newTaxiY<N+1 && visit[newTaxiX][newTaxiY] == false) {
+						if(map[newTaxiX][newTaxiY] !=1) {
+							visit[newTaxiX][newTaxiY] = true;
+							Taxi newTaxi = new Taxi(newTaxiX, newTaxiY);
+							q.add(newTaxi);
+							//movement+=1;
+							go =true;
+							//이렇게 movement를 계속 +1을하면 모든 중복되서 +1이 된다.
+							//보통 갯수를 세는거였으니까 이렇게 했는 여긴 movement 길이를 세는거니까 다른 방법이 필요하다.
+						}
+					}
+				}
+				if(go) {
+					movement+=1;
+					go = false;
+				}
+				//System.out.println(movement);
+			}else {
+				return movement;
+			}
 		}
 		print2D(visit);
-		return consumes;
+		return movement;
 	}
 	
 	public static void solution() {
@@ -124,6 +152,7 @@ public class SamsungStartTaxi {
 		//현재 택시에서 가장 가까운 승객까지
 		int consumesPass  = bfs();
 		fuel -= consumesPass;
+		System.out.println(waitList);
 		
 		if(fuel <0) {
 			System.out.println("fail");
@@ -177,7 +206,8 @@ public class SamsungStartTaxi {
 			map[passStartX][passStartY] = i+2;
 			map[passEndX][passEndY] = -(i+2);
 			Passenger passenger = new Passenger(passStartX, passStartY, passEndX, passEndY, i+2); //마지막에 승객 번호를 부여해준다 (2부터)
-			passList.add(passenger);
+			passMap.put(i+2, passenger);
+			//passList.add(passenger);
 		}
 		
 		print2D(map);
