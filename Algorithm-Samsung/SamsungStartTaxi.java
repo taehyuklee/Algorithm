@@ -1,16 +1,22 @@
-package StartTaxiTest;
+package SamsungStartTaxi;
 
 import java.util.*;
 import java.io.*;
 
 class Taxi{
 	
-	int taxiX, taxiY;
+	int taxiX, taxiY, movement;
 
-	public Taxi(int taxiX, int taxiY) {
+	public Taxi(int taxiX, int taxiY, int movement) {
 		super();
 		this.taxiX = taxiX;
 		this.taxiY = taxiY;
+		this.movement = movement;
+	}
+
+	@Override
+	public String toString() {
+		return "Taxi [taxiX=" + taxiX + ", taxiY=" + taxiY + ", movement=" + movement + "]";
 	}
 
 }
@@ -27,6 +33,18 @@ class Passenger{
 		this.index = index;
 	}
 
+	public int getStartX() {
+		return startX;
+	}
+
+	public int getStartY() {
+		return startY;
+	}
+
+	public int getDist() {
+		return dist;
+	}
+
 	@Override
 	public String toString() {
 		return "Passenger [startX=" + startX + ", startY=" + startY + ", endX=" + endX + ", endY=" + endY + ", index="
@@ -37,17 +55,18 @@ class Passenger{
 }
 
 
-
-public class StartTaxiTest {
+public class SamsungStartTaxi {
 	
 	
 	static int [][] map = new int[21][21];
 	static int taxiX, taxiY;
 	static int passStartX, passStartY, passEndX, passEndY;
 	static int N, M, fuel;
+	static Passenger taken;
 	static List<Passenger> passList = new ArrayList<>();
 	static Map<Integer, Passenger> passMap = new HashMap<>();
 	static List<Passenger> waitList = new ArrayList<>();
+	
 	
 	public static void print2D(int[][] arr) {
 		for(int i=1; i<N+1; i++) {
@@ -68,8 +87,7 @@ public class StartTaxiTest {
 	}
 	
 	public static int bfs() {
-		
-		
+	
 		Queue<Taxi> q = new LinkedList<>();
 		
 		//visit array를 만든다.
@@ -83,7 +101,8 @@ public class StartTaxiTest {
 		//Passenger passenger= passList.remove(0);
 		
 		//첫 위치에 있는 taxi 객체를 만들어서
-		Taxi taxi = new Taxi(taxiX, taxiY);
+		Taxi taxi = new Taxi(taxiX, taxiY, 0);
+		visit[taxiX][taxiY] = true;
 		
 		//q에 넣어준다
 		q.add(taxi);
@@ -99,18 +118,28 @@ public class StartTaxiTest {
 			Taxi tempTaxi = q.poll();
 			taxiX = tempTaxi.taxiX; 
 			taxiY = tempTaxi.taxiY;
+			movement = tempTaxi.movement;
+			
 			int newTaxiX = 0;
 			int newTaxiY = 0;
-			boolean go = false; //count를 해야할지 말아야 할지에 대한 분기처
-			
+			//첫번째 위치 true로 해준다. 이걸 빼먹었었다.
+
 			//만약 그 위치가 승객이 있다면 
-			if(passMap.get(map[taxiX][taxiY]) !=null) {
-				if(passMap.get(map[taxiX][taxiY]).index >1) {
-					
-					//승객이 존재한다는 의미 -> 태워야 한다
-					passMap.get(map[taxiX][taxiY]).dist = movement;
-					waitList.add(passMap.get(map[taxiX][taxiY]));
-					passMap.remove(map[taxiX][taxiY]);
+			if(taken ==null) {
+				if(passMap.get(map[taxiX][taxiY]) !=null) {
+					if(map[taxiX][taxiY] >1) {
+						//System.out.println(taxiX  + " "+ taxiY + " "+ movement);
+						//승객이 존재한다는 의미 -> 태워야 한다
+						passMap.get(map[taxiX][taxiY]).dist = movement;
+						waitList.add(passMap.get(map[taxiX][taxiY]));
+						//System.out.println(waitList.size());
+						
+					}
+				}
+			}else {
+				if(map[taxiX][taxiY] == - taken.index) {
+					map[taxiX][taxiY] = 0;
+					return movement;
 				}
 			}
 			
@@ -119,59 +148,86 @@ public class StartTaxiTest {
 				for(int i=0; i<4; i++) {
 					newTaxiX = taxiX + dx[i];
 					newTaxiY = taxiY + dy[i];
-					
-					if(newTaxiX>=1 && newTaxiX<N+1 && newTaxiY>=1 && newTaxiY<N+1 && visit[newTaxiX][newTaxiY] == false) {
-						if(map[newTaxiX][newTaxiY] !=1) {
-							visit[newTaxiX][newTaxiY] = true;
-							Taxi newTaxi = new Taxi(newTaxiX, newTaxiY);
-							q.add(newTaxi);
-							//movement+=1;
-							go =true;
-							//이렇게 movement를 계속 +1을하면 모든 중복되서 +1이 된다.
-							//보통 갯수를 세는거였으니까 이렇게 했는 여긴 movement 길이를 세는거니까 다른 방법이 필요하다.
-						}
+
+						if(newTaxiX>=1 && newTaxiX<N+1 && newTaxiY>=1 && newTaxiY<N+1 && visit[newTaxiX][newTaxiY] == false) {
+							if(map[newTaxiX][newTaxiY] !=1) {
+								visit[newTaxiX][newTaxiY] = true;
+								Taxi newTaxi = new Taxi(newTaxiX, newTaxiY, movement+1);
+								q.add(newTaxi);
+							}
 					}
 				}
-				if(go) {
-					movement+=1;
-					go = false;
-				}
-				//System.out.println(movement);
-			}else {
-				return movement;
 			}
-		}
-		print2D(visit);
+		}//while문 마지막
+		//print2D(visit);
 		return movement;
 	}
 	
 	public static void solution() {
 		
 		//아래의 과정을 passList가 0이 될때까지 (승객을 모두 데려다 줄때까지 반복한다)
-		
-		//현재 택시에서 가장 가까운 승객까지
-		int consumesPass  = bfs();
-		fuel -= consumesPass;
-		System.out.println(waitList);
-		
-		if(fuel <0) {
-			System.out.println("fail");
-		}else {
-			//승객부터 그 승객의 목적지까지
-			int consumesDest = bfs();
-			fuel -= consumesDest;
+		boolean success = true;
+		for(int i=0; i<M; i++) {
+			//현재 택시에서 가장 가까운 승객까지\
+			//System.out.println("count" + " " + i);
+			int consumesPass  = bfs();		
+			//System.out.println(waitList);
 			
-			if(fuel <0) {
-				System.out.println("fail");
-			}else {
-				fuel *=2;
+			if(waitList.size()>1) {
+				Collections.sort(waitList, Comparator.comparing(Passenger::getDist).reversed().thenComparing(Passenger::getStartX)
+						.thenComparing(Passenger::getStartY));
 			}
+			
+			if(waitList.size() !=0) {
+				taken = waitList.remove(0); //첫번째꺼 빼내고
+				fuel -= taken.dist; // 앞서 마지막에 반환되는 값으로 그냥 넣었더니 안됨 문제점 노션에 기록함.
+				passMap.remove(map[taken.startX][taken.startY]);
+				map[taken.startX][taken.startY] = 0;
+				waitList.clear(); // waitList는 초기화 해줘야 한다.
+				//현재 위치가 taxi의 위치가 된다
+				taxiX = taken.startX;
+				taxiY = taken.startY;
+			}else {
+				//승객이 없다는 얘기가 됨 -> 실패
+				success = false;
+				break;
+			}
+	
+			if(fuel <0) {
+				success = false;
+				break;
+			}else {
+				//승객부터 그 승객의 목적지까지
+				int consumesDest = bfs();
+				if(consumesDest ==0) {
+					success = false;
+					break;
+				}
+				//System.out.println(consumesDest);
+				fuel -= consumesDest;
+				//System.out.println("after dest" + fuel);
+				
+				if(fuel <0) {
+					success = false;
+					break;
+				}else {
+					fuel += consumesDest*2;
+				}
+				
+			}
+			
+			taken = null; // taken은 한 바퀴 돌면 다시 초기화 해줘야 한다.
 		}
+		if(success) {
+			System.out.println(fuel);
+		}else {
+			System.out.println(-1);
+		}
+		
 		
 	}
 	
-	
-	
+
 	public static void main(String[] args) throws IOException {
 		
 		//Input
