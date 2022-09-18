@@ -93,13 +93,6 @@ public class SamsungStartTaxi {
 		//visit array를 만든다.
 		boolean [][] visit = new boolean[21][21];
 	
-//		for(int i=1; i<N+1; i++) {
-//			Arrays.fill(visit[i], false);
-//		}
-		
-		//System.out.println(Arrays.deepToString(visit));
-		//Passenger passenger= passList.remove(0);
-		
 		//첫 위치에 있는 taxi 객체를 만들어서
 		Taxi taxi = new Taxi(taxiX, taxiY, 0);
 		visit[taxiX][taxiY] = true;
@@ -112,6 +105,7 @@ public class SamsungStartTaxi {
 		int[] dy = {0,0,-1,1};
 		
 		int movement = 0;
+		int preMovement = 0;
 		
 		while(!q.isEmpty()) {
 			
@@ -123,7 +117,15 @@ public class SamsungStartTaxi {
 			int newTaxiX = 0;
 			int newTaxiY = 0;
 			//첫번째 위치 true로 해준다. 이걸 빼먹었었다.
+			//System.out.println(taxiX +" " +  taxiY + " " + movement + " " + "fuel" + fuel);
 
+            // 택시 이동 시간대가 다르고 candidates 가 이미 존재하면 break
+            if (preMovement != tempTaxi.movement && !waitList.isEmpty()) {
+                break;
+            }
+            
+            preMovement = tempTaxi.movement;
+            
 			//만약 그 위치가 승객이 있다면 
 			if(taken ==null) {
 				if(passMap.get(map[taxiX][taxiY]) !=null) {
@@ -133,12 +135,10 @@ public class SamsungStartTaxi {
 						passMap.get(map[taxiX][taxiY]).dist = movement;
 						waitList.add(passMap.get(map[taxiX][taxiY]));
 						//System.out.println(waitList.size());
-						
 					}
 				}
 			}else {
-				if(map[taxiX][taxiY] == - taken.index) {
-					map[taxiX][taxiY] = 0;
+				if(taxiX == taken.endX && taxiY == taken.endY) {
 					return movement;
 				}
 			}
@@ -160,23 +160,25 @@ public class SamsungStartTaxi {
 			}
 		}//while문 마지막
 		//print2D(visit);
-		return movement;
+		return 0;
 	}
 	
 	public static void solution() {
 		
 		//아래의 과정을 passList가 0이 될때까지 (승객을 모두 데려다 줄때까지 반복한다)
 		boolean success = true;
-		for(int i=0; i<M; i++) {
+		//for(int i=0; i<M; i++) {
+		while(!passMap.isEmpty()) {
 			//현재 택시에서 가장 가까운 승객까지\
 			//System.out.println("count" + " " + i);
 			int consumesPass  = bfs();		
-			//System.out.println(waitList);
+			//System.out.println("Before ordered" +"  " +waitList);
 			
 			if(waitList.size()>1) {
-				Collections.sort(waitList, Comparator.comparing(Passenger::getDist).reversed().thenComparing(Passenger::getStartX)
+				Collections.sort(waitList, Comparator.comparing(Passenger::getDist).thenComparing(Passenger::getStartX)
 						.thenComparing(Passenger::getStartY));
 			}
+			//System.out.println("After ordered" +"  " +waitList);
 			
 			if(waitList.size() !=0) {
 				taken = waitList.remove(0); //첫번째꺼 빼내고
@@ -196,34 +198,31 @@ public class SamsungStartTaxi {
 			if(fuel <0) {
 				success = false;
 				break;
-			}else {
-				//승객부터 그 승객의 목적지까지
-				int consumesDest = bfs();
-				if(consumesDest ==0) {
-					success = false;
-					break;
-				}
-				//System.out.println(consumesDest);
-				fuel -= consumesDest;
-				//System.out.println("after dest" + fuel);
-				
-				if(fuel <0) {
-					success = false;
-					break;
-				}else {
-					fuel += consumesDest*2;
-				}
-				
 			}
 			
+			//승객부터 그 승객의 목적지까지
+			int consumesDest = bfs();
+			if(consumesDest ==0) {
+				success = false;
+				break;
+			}
+
+			fuel -= consumesDest;
+
+			if(fuel <0) {
+				success = false;
+				break;
+			}
+			
+			fuel += consumesDest*2;
 			taken = null; // taken은 한 바퀴 돌면 다시 초기화 해줘야 한다.
-		}
+		}	
+
 		if(success) {
 			System.out.println(fuel);
 		}else {
 			System.out.println(-1);
 		}
-		
 		
 	}
 	
@@ -260,13 +259,13 @@ public class SamsungStartTaxi {
 			passEndY = Integer.parseInt(st.nextToken());
 			//map에 표기해줘야 한다 -> BFS사용할때 알아야 하니까 (map을 탐험하게 될테니까)
 			map[passStartX][passStartY] = i+2;
-			map[passEndX][passEndY] = -(i+2);
+			//map[passEndX][passEndY] = -(i+2);
 			Passenger passenger = new Passenger(passStartX, passStartY, passEndX, passEndY, i+2); //마지막에 승객 번호를 부여해준다 (2부터)
 			passMap.put(i+2, passenger);
 			//passList.add(passenger);
 		}
 		
-		print2D(map);
+		//print2D(map);
 		
 		solution();
 			
