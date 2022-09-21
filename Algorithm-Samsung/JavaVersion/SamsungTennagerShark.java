@@ -7,7 +7,6 @@ class Fish implements Cloneable{
 	boolean alive;
 
 	public Fish(int id, int dir, int x, int y, boolean alive) {
-		super();
 		this.id = id;
 		this.dir = dir;
 		this.x = x;
@@ -23,9 +22,9 @@ class Fish implements Cloneable{
 }
 
 class Shark implements Cloneable{
+	int dir, eat, x, y;
 	
 	public Shark(int dir, int eat, int x, int y) {
-		super();
 		this.dir = dir;
 		this.eat = eat;
 		this.x = x;
@@ -36,8 +35,6 @@ class Shark implements Cloneable{
 	public String toString() {
 		return "Shark [dir=" + dir + ", eat=" + eat + ", x=" + x + ", y=" + y + "]";
 	}
-
-	int dir, eat, x, y;
 }
 
 
@@ -48,6 +45,8 @@ public class TennagerShark{
 	//direction
 	static int[] dx = {-1,-1,0,1,1,1,0,-1};
 	static int[] dy = {0,-1,-1,-1,0,1,1,1};
+	static int maxSum = 0;
+	static int size=0;
 	
 	static int[][] fishes = new int[4][4];
 	
@@ -119,7 +118,7 @@ public class TennagerShark{
 			}
 		}
 		
-		System.out.println(fishList);
+		//System.out.println(fishList);
 		
 		Collections.sort(fishList, new Comparator<Fish>() {
 			@Override
@@ -128,7 +127,7 @@ public class TennagerShark{
 			}
 		});
 		
-//		System.out.println(fishList);
+		//System.out.println(fishList);
 		
 		//solution
 		solution(fishList);
@@ -139,73 +138,78 @@ public class TennagerShark{
 	
 	public static void solution(List<Fish> fishList) {
 		
-		
 		//상어가 먹는다
-		
 		//초기 조건 (0,0)
-		Fish firstFish= findByCoord(0,0,fishList);
+		Fish firstFish = findByCoord(0,0,fishList);
 		Shark shark = new Shark(firstFish.dir, firstFish.id, 0, 0);
 		firstFish.alive = false;
-		System.out.println(shark);
-		
+
+		List<Fish> copiedFish = deepCopyArrayList(fishList);
 		
 		//물고기가 이동한다
 		for(int i=0; i<fishList.size(); i++) {
 			if(fishList.get(i).alive == true) {
 				//System.out.println(i+1 + "번째 입니다");
 				moveFish(fishList.get(i), shark, fishList);
-				//print2DArray(fishList);
+				
 				//System.out.println();
 			}
 		}
-		
-		//System.out.println(fishList);
-		List<Fish> copiedFish = deepCopyArrayList(fishList);
-		Shark copiedShark = new Shark(0, 0, 0, 0);
-		copiedShark = shark;
-		
-		
-		//상어가 이동한다.
-		dfs(copiedFish, copiedShark);
 
-		
-		//상어가 먹는다
+		//상어가 이동한다.
+		size = 0;
+		dfs(fishList, shark, size);
+		System.out.println(maxSum);
+
 		
 	}
 	
-	public static void dfs(List<Fish> originFishList, Shark shark) {
-		
+	public static void dfs(List<Fish> originFishList, Shark shark,int size) {
+
 		int nx, ny;
-		for(int dist=0; dist<4; dist++) {
-			
-			
+		
+        if (maxSum < shark.eat) {
+            maxSum = shark.eat;
+        }
+		
+		for(int dist=1; dist<4; dist++) {
+
+			//복제한다 (3개의 경우의수마다 모두 deepCopy한 경우를 기억해야한다)
+			//List<Fish> copiedFish = deepCopyArrayList(originFishList);
+			//여기서 처음에 copiedFish를 맨 마지막에 놨었는데 위치를 여기에 놔야 한다. 3가지 경우의 수 모두 copy해서 다르게 갈거니까 여기서 copy해서 보내는게 맞다.
+			//아래 원래 originFishList로 옮겨다녔었는데 그러면 안됨.
+
 			nx = shark.x + dx[shark.dir]*dist;
-			ny = shark.y + dx[shark.dir]*dist;
-			
+			ny = shark.y + dy[shark.dir]*dist;
+
 			//상어가 먹는다
 			
-			Fish fish= findByCoord(nx,ny,originFishList);
-			Shark newShark = new Shark(fish.dir, fish.id, nx, ny);
-			fish.alive = false;
-			
-			print2DArray(originFishList);
-			System.out.println();
-			
-			//물고기가 이동한다.
-			for(int i=0; i<originFishList.size(); i++) {
-				if(originFishList.get(i).alive == true) {
-					//System.out.println(i+1 + "번째 입니다");
-					moveFish(originFishList.get(i), shark, originFishList);
-					//print2DArray(fishList);
-					//System.out.println();
+			if(nx>=0 && nx<4 && ny>=0 && ny<4) {
+				if(findByCoord(nx,ny,originFishList).alive ==true) {
+
+					List<Fish> copiedFish = deepCopyArrayList(originFishList);
+					
+					Fish fish= findByCoord(nx,ny,copiedFish);
+					
+					Shark newShark = new Shark(fish.dir, shark.eat + fish.id, nx, ny);
+					fish.alive = false;
+					System.out.println(copiedFish);
+	
+					//물고기가 이동한다.
+					for(int i=0; i<copiedFish.size(); i++) {
+						if(copiedFish.get(i).alive == true) {
+							moveFish(copiedFish.get(i), newShark, copiedFish); // 여기 shark로 되어있었음 -> newShark이어야 함
+						}
+					}
+					size+=1;
+					System.out.println("추적" +" " + size);
+					System.out.println(shark.eat + " " + fish.id);
+					
+					dfs(copiedFish, newShark, size);
+
 				}
 			}
-			
-			//복제한다
-			List<Fish> copiedFish = deepCopyArrayList(originFishList);
-			
 
-					
 		}
 
 	}
@@ -229,7 +233,7 @@ public class TennagerShark{
 				
 			}else {
 				//이동할수 있는 조건
-				int tempX, tempY, tempDir;
+				int tempX, tempY;
 				fish.dir = newDir;
 				Fish targetfish = findByCoord(nx, ny, fishList);
 				//교환 -> 내가 실수한 부분 -> 새로운 방향으로 집어 넣어야 하는데 
