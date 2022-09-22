@@ -13,6 +13,15 @@ class Fish implements Cloneable{
 		this.y = y;
 		this.alive = alive;
 	}
+	
+	//복사를 위한 생성자
+	public Fish(Fish targetFish) {
+		this.id = targetFish.id;
+		this.dir = targetFish.dir;
+		this.x = targetFish.x;
+		this.y = targetFish.y;
+		this.alive = targetFish.alive;
+	}
 
 	@Override
 	public String toString() {
@@ -38,7 +47,7 @@ class Shark implements Cloneable{
 }
 
 
-public class TennagerShark{
+public class Main{
 	
 //	static List<Fish> fishList = new ArrayList<>();
 	
@@ -93,7 +102,8 @@ public class TennagerShark{
 		
 		List<Fish> copyList = new ArrayList<Fish>();
 		for(Fish fish: arrayList) {
-			copyList.add(fish);
+			Fish copiedFish = new Fish(fish); //이 부분때문에 상당히 오래걸렸다 딥카피가 안돼서.. 복사 생성자 방법이 있네
+			copyList.add(copiedFish);
 		}
 		return copyList;
 	}
@@ -193,7 +203,10 @@ public class TennagerShark{
 					
 					Shark newShark = new Shark(fish.dir, shark.eat + fish.id, nx, ny);
 					fish.alive = false;
-					System.out.println(copiedFish);
+					//System.out.println(copiedFish);
+					
+					//print2DArray(copiedFish);
+					//System.out.println();
 	
 					//물고기가 이동한다.
 					for(int i=0; i<copiedFish.size(); i++) {
@@ -202,8 +215,8 @@ public class TennagerShark{
 						}
 					}
 					size+=1;
-					System.out.println("추적" +" " + size);
-					System.out.println(shark.eat + " " + fish.id);
+					//System.out.println("추적" +" " + size);
+					//System.out.println(shark.eat + " " + fish.id);
 					
 					dfs(copiedFish, newShark, size);
 
