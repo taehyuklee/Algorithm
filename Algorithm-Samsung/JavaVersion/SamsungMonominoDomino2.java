@@ -82,12 +82,80 @@ public class Main {
 		
 		for(int i=0; i<6; i++) {
 			
+			if(block.t==1) {
+				if(green[i+1][block.y] !=1) {
+					green[i+1][block.y] = green[i][block.y];
+					//지나간 부분은 0으로 바꿔주기
+					green[i][block.y] = 0;
+				}else {
+					break;
+				}
+			}
+			
+			if(block.t==2) {
+				if(green[i+1][block.y] !=1 && green[i+1][block.y+1] !=1) {
+					green[i+1][block.y] = green[i][block.y];
+					green[i+1][block.y+1] = green[i][block.y+1];
+					//지나간 부분은 0으로 바꿔주기
+					green[i][block.y] = 0;
+					green[i][block.y+1] = 0;
+				}else {
+					break;
+				}
+			}
+			
+			if(block.t==3) {
+				if(green[i+2][block.y] !=1 && green[i+3][block.y] !=1) {
+					green[i+2][block.y] = green[i][block.y];
+					green[i+3][block.y] = green[i+1][block.y];
+					//지나간 부분은 0으로 바꿔주기
+					green[i][block.y] = 0;
+					green[i+1][block.y] = 0;
+				}else {
+					break;
+				}
+			}
 		}
 
 	}
 	
 	public static void moveBlue(Block block) {
+		//초기 초건 (blue영역 처음 부분에 red에서 떨어진 블록 구현)
+		blue[block.x][0] = red[block.x][block.y];
 		
+		for(int j=0; j<6; j++) {
+			
+			if(block.t==1) {
+				if(blue[block.x][j+1] !=1) {
+					blue[block.x][j+1] = blue[j][block.y];
+					//지나간 부분은 0으로 바꿔주기
+					blue[j][block.y] = 0;
+				}else {
+					break;
+				}
+			}
+			
+			if(block.t==2) {
+				if(blue[block.x][j+2] !=1 && blue[block.x][j+3] !=1) {
+					blue[block.x][j+2]  = blue[block.x][j];
+					blue[block.x][j+3]  = blue[block.x][j+1];
+					//지나간 부분은 0으로 바꿔주기
+					blue[block.x][j] = 0;
+					blue[block.x][j+1] = 0;
+				}else {
+					break;
+				}
+			}
+			
+			if(block.t==3) {
+				if(blue[block.x][j+1] !=1 && blue[block.x+1][j+1] !=1) {
+					blue[block.x][j+1] = blue[block.x][j];
+					blue[block.x+1][j+1] = blue[block.x+1][j];
+				}else {
+					break;
+				}
+			}
+		}
 	}
 	
 }
