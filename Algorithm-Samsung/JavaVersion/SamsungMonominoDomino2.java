@@ -72,6 +72,13 @@ public class Main {
 		//파란색 이동
 		moveBlue(block);
 		
+		//이동후 칸이 모두 찬 줄이 있는지 확인
+		checkOfLine();
+		
+	}
+	
+	public static void checkOfLine() {
+		
 	}
 	
 	
