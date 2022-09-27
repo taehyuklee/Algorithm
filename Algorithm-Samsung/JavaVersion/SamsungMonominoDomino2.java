@@ -114,19 +114,21 @@ public class Main {
 				red[block.x+1][block.y] = 1;
 				
 			}
-//			System.out.println("red");
-//			print2DArray(red);
-//			System.out.println();
+			System.out.println("red");
+			print2DArray(red);
+			System.out.println();
 			
 			//초록색 이동
+			System.out.println("green");
 			moveGreen(block);
-//			print2DArray(green);
-//			System.out.println();
+			print2DArray(green);
+			System.out.println();
 			
 			//파란색 이동
+			System.out.println("blue");
 			moveBlue(block);
-//			print2DArray(blue);
-//			System.out.println();
+			print2DArray(blue);
+			System.out.println();
 			
 			//red보드는 초기화
 			initRed();
@@ -142,8 +144,8 @@ public class Main {
 			
 
 
-//			print2DArray(red);
-//			System.out.println();
+			print2DArray(red);
+			System.out.println();
 			
 		}
 		
@@ -300,25 +302,29 @@ public class Main {
 		
 		for(int i=0; i<5; i++) {
 			
-			if(block.t==1 && i+1<=5) {
-				if(green[i+1][block.y] !=1) {
-					green[i+1][block.y] = green[i][block.y];
-					//지나간 부분은 0으로 바꿔주기
-					green[i][block.y] = 0;
-				}else {
-					break;
+			if(block.t==1) {
+				if(i+1<=5) {
+					if(green[i+1][block.y] !=1) {
+						green[i+1][block.y] = green[i][block.y];
+						//지나간 부분은 0으로 바꿔주기
+						green[i][block.y] = 0;
+					}else {
+						break;
+					}
 				}
 			}
 			
-			else if(block.t==2 && i+1<=5) {
-				if(green[i+1][block.y] !=1 && green[i+1][block.y+1] !=1) {
-					green[i+1][block.y] = green[i][block.y];
-					green[i+1][block.y+1] = green[i][block.y+1];
-					//지나간 부분은 0으로 바꿔주기
-					green[i][block.y] = 0;
-					green[i][block.y+1] = 0;
-				}else {
-					break;
+			else if(block.t==2) {
+				if(i+1<=5) {
+					if(green[i+1][block.y] !=1 && green[i+1][block.y+1] !=1) {
+						green[i+1][block.y] = green[i][block.y];
+						green[i+1][block.y+1] = green[i][block.y+1];
+						//지나간 부분은 0으로 바꿔주기
+						green[i][block.y] = 0;
+						green[i][block.y+1] = 0;
+					}else {
+						break;
+					}
 				}
 			}
 			
@@ -353,18 +359,20 @@ public class Main {
 		
 		for(int j=0; j<5; j++) {
 			
-			if(block.t==1 && j+1<=5) {
-				if(blue[block.x][j+1] !=1) {
-					blue[block.x][j+1] = blue[block.x][j];
-					//지나간 부분은 0으로 바꿔주기
-					blue[block.x][j] = 0;
-				}else {
-					break;
+			if(block.t==1) {
+				if(j+1<=5) {
+					if(blue[block.x][j+1] !=1) {
+						blue[block.x][j+1] = blue[block.x][j];
+						//지나간 부분은 0으로 바꿔주기
+						blue[block.x][j] = 0;
+					}else {
+						break;
+					}
 				}
 			}
 			
 			else if(block.t==2) {
-				if(j+2<=5) { 
+				if(j+2<=5) {
 					if(blue[block.x][j+2] !=1){
 						//System.out.println("j" + j );
 						blue[block.x][j+1]  = blue[block.x][j];
@@ -377,15 +385,17 @@ public class Main {
 				}
 			}
 			
-			else if(block.t==3 && j+1<=5) {
-				if(blue[block.x][j+1] !=1 && blue[block.x+1][j+1] !=1) {
-					blue[block.x][j+1] = blue[block.x][j];
-					blue[block.x+1][j+1] = blue[block.x+1][j];
-					
-					blue[block.x][j] = 0;
-					blue[block.x+1][j] = 0;
-				}else {
-					break;
+			else if(block.t==3) {
+				if(j+1<=5) {
+					if(blue[block.x][j+1] !=1 && blue[block.x+1][j+1] !=1) {
+						blue[block.x][j+1] = blue[block.x][j];
+						blue[block.x+1][j+1] = blue[block.x+1][j];
+						
+						blue[block.x][j] = 0;
+						blue[block.x+1][j] = 0;
+					}else {
+						break;
+					}
 				}
 			}
 		}
