@@ -23,8 +23,8 @@ public class Main {
 	static int [][] green = new int[6][4];
 	static int [][] blue = new int[4][6];
 	static Queue<Block> blockQ = new LinkedList<Block>();
-	static List<Integer> eraseListGreen = new ArrayList<>();
-	static List<Integer> eraseListBlue= new ArrayList<>();
+//	static List<Integer> eraseListGreen = new ArrayList<>();
+//	static List<Integer> eraseListBlue= new ArrayList<>();
 	static int N, score=0;
 	
 	public static void print2DArray(int[][] arr) {
@@ -95,7 +95,6 @@ public class Main {
 	
 	public static void solution() {
 		
-		int breakSize=0;
 		while(!blockQ.isEmpty()) {
 			//빨간색 보드에 대입
 			Block block = blockQ.poll();
@@ -114,38 +113,43 @@ public class Main {
 				red[block.x+1][block.y] = 1;
 				
 			}
-			System.out.println("red");
-			print2DArray(red);
-			System.out.println();
-			
-			//초록색 이동
-			System.out.println("green");
+//			System.out.println("red");
+//			print2DArray(red);
+//			System.out.println();
+//			
+//			//초록색 이동
+//			System.out.println("green");
 			moveGreen(block);
-			print2DArray(green);
-			System.out.println();
-			
-			//파란색 이동
-			System.out.println("blue");
+//			print2DArray(green);
+//			System.out.println();
+//			
+//			//파란색 이동
+//			System.out.println("blue");
 			moveBlue(block);
-			print2DArray(blue);
-			System.out.println();
+//			print2DArray(blue);
+//			System.out.println();
 			
 			//red보드는 초기화
-			initRed();
+			//initRed();
 			
 			//이동후 칸이 모두 찬 줄이 있는지 확인
 			checkOfLine();
 			
 			//파괴하고 줄을 지운다
-			erase4Count();
+			//erase4Count();
 			
 			//이후 연한 부분 없애자
 			eraseLightPart();
 			
+//			System.out.println("after green");
+//			print2DArray(green);
+//			System.out.println();
+//			
+//			print2DArray(blue);
 
 
-			print2DArray(red);
-			System.out.println();
+			//print2DArray(red);
+			//System.out.println();
 			
 		}
 		
@@ -209,17 +213,20 @@ public class Main {
 		}
 		//System.out.println("greenCount, blueCount" + " " + greenCount + " " + blueCount);
 		//여기서 지워주자
+		//System.out.println(greenCount + " " + blueCount);
 		eraseOperation(greenCount, blueCount);
 		
 	}
 	
 	
-	public static void erase4Count() {
+	public static void erase4Count(String color, int index) {
 		
 		//초록색 지우기
-		for(Integer eraseRow: eraseListGreen) {
+		if(color.equals("green")) {
+//		for(Integer eraseRow: eraseListGreen) {
 			
-			for(int i=eraseRow-1; i>=0; i--) {
+			//하나씩 삭제하면서 해야하는 이유 -> 한꺼번에 하면 원래 기억해 두었던위치는 그대로인데 index가 바
+			for(int i=index-1; i>=0; i--) {
 				for(int j=0; j<4; j++) {
 					green[i+1][j] = green[i][j];
 					if(i==0) {
@@ -229,21 +236,25 @@ public class Main {
 
 			}
 		}
-		eraseListGreen.clear();
+		//}
+		//eraseListGreen.clear();
+		
 		
 		//파란색 지우기
-		for(Integer eraseCol: eraseListBlue) {
+		if(color.equals("blue")) {
+		//for(Integer eraseCol: eraseListBlue) {
 			
-			for(int j=eraseCol-1; j>=0; j--) {
+			for(int j=index-1; j>=0; j--) {
 				for(int i=0; i<4; i++) {
-					green[i][j+1] = green[i][j];
+					blue[i][j+1] = blue[i][j]; // 여기 실
 					if(j==0) {
 						blue[i][j] = 0;
 					}
 				}
 			}
 		}
-		eraseListBlue.clear();
+		//}
+		//eraseListBlue.clear();
 		
 	}
 	
@@ -252,7 +263,7 @@ public class Main {
 		int count=0;
 		
 		//초록색 줄 확인
-		for(int i=5; i>=2; i--) {
+		for(int i=5; i>=0; i--) {
 			count =0;
 			for(int j=0; j<4; j++) {
 				if(green[i][j]==1) {
@@ -261,7 +272,10 @@ public class Main {
 			}
 			if(count==4) {
 				score+=1;
-				eraseListGreen.add(i);
+				erase4Count("green", i);
+				i++; //층이 내려왔으니
+				
+//				eraseListGreen.add(i);
 			}
 			
 		}
@@ -269,7 +283,7 @@ public class Main {
 		
 		
 		//파란색 줄 확인
-		for(int j=5; j>=2; j--) {
+		for(int j=5; j>=0; j--) {
 			count =0;
 			for(int i=0; i<4; i++) {
 				if(blue[i][j]==1) {
@@ -278,7 +292,10 @@ public class Main {
 			}
 			if(count==4) {
 				score+=1;
-				eraseListBlue.add(j);
+				erase4Count("blue", j);
+				j++; //반대로더해줘야 한다. (여기 디버깅)
+				
+				//eraseListBlue.add(j);
 			}
 			
 		}
@@ -291,19 +308,19 @@ public class Main {
 		
 		//초기 초건 (green영역 처음 부분에 red에서 떨어진 블록 구현)
 		if(block.t==1) {
-			green[0][block.y] = red[block.x][block.y];
+			green[0][block.y] = 1; //red[block.x][block.y];
 		}else if(block.t==2) {
-			green[0][block.y] = red[block.x][block.y];
-			green[0][block.y+1] = red[block.x][block.y+1];
+			green[0][block.y] = 1; //red[block.x][block.y];
+			green[0][block.y+1] = 1; //red[block.x][block.y+1];
 		}else if(block.t==3) {
-			green[0][block.y] = red[block.x][block.y];
-			green[1][block.y] = red[block.x][block.y];
+			green[0][block.y] = 1; //red[block.x][block.y];
+			green[1][block.y] = 1; //red[block.x+1][block.y];
 		}
 		
 		for(int i=0; i<5; i++) {
 			
 			if(block.t==1) {
-				if(i+1<=5) {
+				if(i<=4) {
 					if(green[i+1][block.y] !=1) {
 						green[i+1][block.y] = green[i][block.y];
 						//지나간 부분은 0으로 바꿔주기
@@ -315,7 +332,7 @@ public class Main {
 			}
 			
 			else if(block.t==2) {
-				if(i+1<=5) {
+				if(i<=4) {
 					if(green[i+1][block.y] !=1 && green[i+1][block.y+1] !=1) {
 						green[i+1][block.y] = green[i][block.y];
 						green[i+1][block.y+1] = green[i][block.y+1];
@@ -329,7 +346,7 @@ public class Main {
 			}
 			
 			else if(block.t==3) {
-				if(i+2<=5) {
+				if(i<=3) {
 					if(green[i+2][block.y] !=1) {
 						green[i+1][block.y] = green[i][block.y];
 						green[i+2][block.y] = green[i+1][block.y];
@@ -348,19 +365,19 @@ public class Main {
 		//초기 초건 (blue영역 처음 부분에 red에서 떨어진 블록 구현)
 
 		if(block.t==1) {
-			blue[block.x][0] = red[block.x][block.y];
+			blue[block.x][0] = 1; //red[block.x][block.y];
 		}else if(block.t==2) {
-			blue[block.x][0] = red[block.x][block.y];
-			blue[block.x][1] = red[block.x][block.y];
+			blue[block.x][0] = 1; //red[block.x][block.y];
+			blue[block.x][1] = 1; //red[block.x][block.y+1];
 		}else if(block.t==3) {
-			blue[block.x][0] = red[block.x][block.y];
-			blue[block.x+1][0] = red[block.x+1][block.y];
+			blue[block.x][0] = 1; //red[block.x][block.y];
+			blue[block.x+1][0] = 1; //red[block.x+1][block.y];
 		}
 		
 		for(int j=0; j<5; j++) {
 			
 			if(block.t==1) {
-				if(j+1<=5) {
+				if(j<=4) {
 					if(blue[block.x][j+1] !=1) {
 						blue[block.x][j+1] = blue[block.x][j];
 						//지나간 부분은 0으로 바꿔주기
@@ -372,9 +389,8 @@ public class Main {
 			}
 			
 			else if(block.t==2) {
-				if(j+2<=5) {
+				if(j<=3) {
 					if(blue[block.x][j+2] !=1){
-						//System.out.println("j" + j );
 						blue[block.x][j+1]  = blue[block.x][j];
 						blue[block.x][j+2]  = blue[block.x][j+1];
 						//지나간 부분은 0으로 바꿔주기
@@ -386,7 +402,7 @@ public class Main {
 			}
 			
 			else if(block.t==3) {
-				if(j+1<=5) {
+				if(j<=4) {
 					if(blue[block.x][j+1] !=1 && blue[block.x+1][j+1] !=1) {
 						blue[block.x][j+1] = blue[block.x][j];
 						blue[block.x+1][j+1] = blue[block.x+1][j];
