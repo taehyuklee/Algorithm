@@ -143,15 +143,17 @@ public class Main{
 	public static void solution(Shark shark) {
 		
 		//Loop S번
-		
+		for(int s=0; s<S; s++) {
 			//복제 마법 사용
 			Node[][] copied = copyMagic(nodeMap);
 //			print2D(nodeMap);
 			
 			//물고기 이동
 			Node[][] movedMap = moveFish();
-//			System.out.println();
-//			print2D(subNodeMap);
+			System.out.println();
+			System.out.println("물고기 이동");
+			print2D(movedMap);
+			System.out.println();
 			
 			
 			//상어 이동
@@ -162,14 +164,15 @@ public class Main{
 			
 			Collections.sort(pathList);
 			System.out.println(pathList);
+			System.out.println();
 			
 			//최단 경로 선택
 			String shortestPath = pathList.get(0);
-			if(shortestPath.length() ==3) {
-				System.out.println("ok");
-			}else {
-				System.out.println("something problem");
-			}
+//			if(shortestPath.length() ==3) {
+//				System.out.println("ok");
+//			}else {
+//				System.out.println("something problem");
+//			}
 			
 			int[] shortArr = new int[3];
 			
@@ -179,32 +182,80 @@ public class Main{
 			}
 			
 			//최단경로로 상어 이동
-			//print1D(shortArr);
-//			System.out.println(shark);
+			print1D(shortArr);
+			System.out.println(shark);
 			moveShark(shortArr, movedMap, shark);
 
 			
 			//냄새가 1씩 사라짐
+			//print2D(movedMap);
 			reduceSmell(movedMap);
 			
 			//print2D(movedMap);
 			
-			
+			//System.out.println();
 			//복제 한거 선택된 map에 더함
-			//update(movedMap);
+			copiedOperation(movedMap, copied);
+			//print2D(movedMap);
 			
 			//updated movedMap을 nodeMap으로 업데이트한다
+			update(movedMap);
+			print2D(nodeMap);
+			System.out.println();
+
+		}
+		
+		System.out.println(shark);
+	
+	
+	int answer = getAnswer();
+	System.out.println(answer);
 
 		
 	}
 	
+	public static int getAnswer() {
+		
+		int answer = 0;
+		
+		for(int i=0; i<nodeMap.length; i++) {
+			for(int j=0; j<nodeMap[0].length; j++) {
+				answer += nodeMap[i][j].fishList.size();
+			}
+		}
+		return answer;
+	}
 	
-	public static void copiedOperation(Node[][] movedMap) {
+	public static void update(Node[][] movedMap) {
+		
+		for (int i=0; i<movedMap.length; i++) {
+			for (int j=0; j<movedMap[0].length; j++) {
+				Node node = nodeMap[i][j];
+				Node oldNode = movedMap[i][j];
+				
+				node.fishList.clear();
+				node.fishList.addAll(oldNode.fishList);
+				node.smell = oldNode.smell;
+				node.shark = oldNode.shark;
+				
+				oldNode.smell =0;
+				oldNode.fishList.clear();
+			}
+		}
+		
+		
+
+		
+		
+	}
+	
+	
+	public static void copiedOperation(Node[][] movedMap, Node[][] copied) {
 		
 		for (int i=0; i<movedMap.length; i++) {
 			for (int j=0; j<movedMap[0].length; j++) {
 				
-				movedMap[i][j].fishList.addAll(nodeMap[i][j].fishList);
+				movedMap[i][j].fishList.addAll(copied[i][j].fishList);
 			}
 		}
 	}
@@ -260,7 +311,7 @@ public class Main{
 				max = shark.eat;
 				pathList.clear();
 				pathList.add(shark.pathNm);
-				System.out.println(shark.eat + " " +shark.pathNm);
+				//System.out.println(shark.eat + " " +shark.pathNm);
 			}else if(max == shark.eat) {
 				pathList.add(shark.pathNm);
 			}
