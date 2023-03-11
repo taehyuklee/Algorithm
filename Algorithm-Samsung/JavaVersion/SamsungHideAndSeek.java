@@ -107,8 +107,6 @@ public class Main {
 		runnerBoard = new ArrayList[N][N];
 		runnerBoard2 = new ArrayList[N][N];
 		
-		//System.out.println(runnerBoard.length + " "+ runnerBoard[0].length);
-		
 		for(int i=0; i<N; i++) {
 			for(int j=0; j<N; j++) {
 				runnerBoard[i][j] = new ArrayList<Runner>();
@@ -136,8 +134,7 @@ public class Main {
 		//make spiral coordinate
 		makdSpiral();
 		chaserPos = 0; //map에서 key로 관리 (chaser의 위치)
-		print(runnerBoard);
-		print(treeBoard);
+		
 		solution();
 		
 	}
@@ -182,28 +179,17 @@ public class Main {
 
 		for(int turn=1; turn<=K; turn++) {
 			//술래와의 거리가 3이하인 도망자들만 움직인다. (격자내 규칙 외 규칙)
-			
-			System.out.println("========================================================");
-
-			System.out.println(turn + " 차례입니다");
 			moveRunner();
-//			print(runnerBoard2);
-			
+
 			//술래가 움직인다. (방향 틀어지는거 확인)
 			moveChaser();
 	
 			//술래가 보는 방향으로 3칸 내의 도망자 잡아 (나무랑 같이 있는 도망자는 제외)
 			removeRunner(turn);
-			
+
 			transferBoard();
 			
-//			System.out.println();
-			print(chaserBoard);
-//			System.out.println(answer);
-//			System.out.println();
-			
 		}
-		
 		
 		System.out.println(answer);
 		
@@ -239,9 +225,10 @@ public class Main {
 							if(newX>=0 && newX<N && newY>=0 && newY<N) {//격자 이내 
 								
 								if(chaserX == newX && chaserY == newY ) { //술래가 있으면 안움직인다.
+									//술래가 있으면 안움직이고 여기서 끝나야하는데 이 조건 안넣어줌 (3월 11일 오후 3:46)
+									runnerBoard2[i][j].add(runner);//이 조건때문에 계속 사라졌
 									continue;
 								}else {//그외에 한칸 이동 (arraylist안에서 빼서 옮기는거 기술 필요)
-									//runnerBoard[i][j].remove(runner);
 									runnerBoard2[newX][newY].add(runner);
 								}
 								
@@ -253,6 +240,7 @@ public class Main {
 								newY = j + dyRunner[runnerDir];
 								
 								if(chaserX == newX && chaserY == newY ) { //술래 있으면 안움직
+									runnerBoard2[i][j].add(runner);
 									continue;
 								}else {//그외에 한 칸 이동
 									//runnerBoard[i][j].remove(runner);
@@ -308,8 +296,7 @@ public class Main {
 		}else if(chaserPos == 0 && reverse == false) {//0에 가자마자 reverse가 flase로 바뀌게 해놓음
 			lookX = -1; lookY=0;
 		}
-		
-		//System.out.println(lookX + " " + lookY);
+
 	}
 	
 	public static void removeRunner(int turn) {
@@ -323,10 +310,6 @@ public class Main {
 			
 			//범위 설정 안했었다..
 			if(rangeX>=0 && rangeX<N && rangeY>=0 && rangeY<N) {
-				//System.out.println(rangeX + " " + rangeY);
-//				System.out.println("이건 점수 판 확인");
-//				System.out.println(turn*runnerBoard2[rangeX][rangeY].size());
-//				System.out.println("chaserX: " + chaserX + " " + " chaserY: " + chaserY + " lookX: " + lookX + " lookY: " + lookY);
 				if(treeBoard[rangeX][rangeY] !=1 && runnerBoard2[rangeX][rangeY].size() !=0) {
 					//나무가 없을때만 runner가 잡히므로
 					//점수 합산해주고
@@ -338,8 +321,6 @@ public class Main {
 		}
 	}
 	
-	
-
 	public static void transferBoard() {
 		for(int i=0; i<N; i++) {
 			for(int j=0; j<N; j++) {
@@ -348,8 +329,8 @@ public class Main {
 					for(int k=0; k<runnerBoard2[i][j].size(); k++) {
 						Runner runner = runnerBoard2[i][j].get(k);
 						runnerBoard[i][j].add(new Runner(runner));
-						runnerBoard2[i][j].clear();
 					}
+					runnerBoard2[i][j].clear(); // 다 옮기고나서 clear해줘야함.
 				}
 			}
 		}
