@@ -70,6 +70,7 @@ public class Main {
 			}
 			System.out.println();
 		}
+		System.out.println();
 	}
 	
 	public static void print(int[] array) {
@@ -77,6 +78,7 @@ public class Main {
 		for(int i=0; i<array.length; i++) {
 			System.out.print(array[i] + " ");
 		}
+		System.out.println();
 	}
 	
 	public static void print(List<Runner> [][] array) {
@@ -87,6 +89,7 @@ public class Main {
 			}
 			System.out.println();
 		}
+		System.out.println();
 	}
 	
 	public static void main(String[] args) {
@@ -133,7 +136,8 @@ public class Main {
 		//make spiral coordinate
 		makdSpiral();
 		chaserPos = 0; //map에서 key로 관리 (chaser의 위치)
-		
+		print(runnerBoard);
+		print(treeBoard);
 		solution();
 		
 	}
@@ -178,8 +182,12 @@ public class Main {
 
 		for(int turn=1; turn<=K; turn++) {
 			//술래와의 거리가 3이하인 도망자들만 움직인다. (격자내 규칙 외 규칙)
+			
+			System.out.println("========================================================");
+
+			System.out.println(turn + " 차례입니다");
 			moveRunner();
-			//print(runnerBoard2);
+//			print(runnerBoard2);
 			
 			//술래가 움직인다. (방향 틀어지는거 확인)
 			moveChaser();
@@ -187,10 +195,18 @@ public class Main {
 			//술래가 보는 방향으로 3칸 내의 도망자 잡아 (나무랑 같이 있는 도망자는 제외)
 			removeRunner(turn);
 			
-			copyBoard();
+			transferBoard();
+			
+//			System.out.println();
+			print(chaserBoard);
+//			System.out.println(answer);
+//			System.out.println();
+			
 		}
 		
+		
 		System.out.println(answer);
+		
 	}
 	
 	public static void moveRunner() {
@@ -209,6 +225,7 @@ public class Main {
 					int distance = Math.abs(chaserX - i) + Math.abs(chaserY - j);
 					
 					if(distance<=3) {
+
 						//3이하 거리인 술래들이면 움직인다.
 						//만약 술래가 두 명 이상이라면
 						for(int k=0; k<runnerBoard[i][j].size(); k++) { //runner : runnerBoard[i][j]) {
@@ -246,7 +263,13 @@ public class Main {
 							
 						}
 					
-					}	
+					}else {
+						//안움직인건 그대로 있어줘야 한다 (내가 빼먹음)
+						for(int k=0; k<runnerBoard[i][j].size(); k++) { //runner : runnerBoard[i][j]) {
+							Runner runner = runnerBoard[i][j].get(k);
+							runnerBoard2[i][j].add(runner);
+						}
+					}
 				}
 			}
 		}
@@ -298,21 +321,26 @@ public class Main {
 			int rangeX = chaserX + lookX*i;
 			int rangeY = chaserY + lookY*i;
 			
-			//System.out.println(rangeX + " " + rangeY);
-			if(treeBoard[rangeX][rangeY] !=1) {
-				//나무가 없을때만 runner가 잡히므로
-				//점수 합산해주고
-				answer = turn*runnerBoard2[rangeX][rangeY].size();
-				//도망자 제거해주고
-				runnerBoard2[rangeX][rangeY].clear();
+			//범위 설정 안했었다..
+			if(rangeX>=0 && rangeX<N && rangeY>=0 && rangeY<N) {
+				//System.out.println(rangeX + " " + rangeY);
+//				System.out.println("이건 점수 판 확인");
+//				System.out.println(turn*runnerBoard2[rangeX][rangeY].size());
+//				System.out.println("chaserX: " + chaserX + " " + " chaserY: " + chaserY + " lookX: " + lookX + " lookY: " + lookY);
+				if(treeBoard[rangeX][rangeY] !=1 && runnerBoard2[rangeX][rangeY].size() !=0) {
+					//나무가 없을때만 runner가 잡히므로
+					//점수 합산해주고
+					answer += turn*runnerBoard2[rangeX][rangeY].size();
+					//도망자 제거해주고
+					runnerBoard2[rangeX][rangeY].clear();
+				}
 			}
-			
 		}
 	}
 	
 	
 
-	public static void copyBoard() {
+	public static void transferBoard() {
 		for(int i=0; i<N; i++) {
 			for(int j=0; j<N; j++) {
 				runnerBoard[i][j].clear();
@@ -320,6 +348,7 @@ public class Main {
 					for(int k=0; k<runnerBoard2[i][j].size(); k++) {
 						Runner runner = runnerBoard2[i][j].get(k);
 						runnerBoard[i][j].add(new Runner(runner));
+						runnerBoard2[i][j].clear();
 					}
 				}
 			}
