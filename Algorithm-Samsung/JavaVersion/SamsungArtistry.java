@@ -14,7 +14,7 @@ class Node{
 
     @Override
     public String toString(){
-        return "(x: " + this.x + " y: " + this.y + ")"; //"group: " + this.group + 
+        return "(x: " + this.x + " y: " + this.y + ")";
     }
 }
 
@@ -40,9 +40,8 @@ public class Main {
     public static void print(ArrayList<int[]> comList) {
     	
     	for(int i=0; i<comList.size(); i++) {
-    		//for(int j=0; j<comList.get(i).length; j++) {
-    			System.out.println("("+ comList.get(i)[0] + " " + comList.get(i)[1] +")" );
-    		//}
+    		System.out.println("("+ comList.get(i)[0] + " " + comList.get(i)[1] +")" );
+
     	}
     	
     }
@@ -357,7 +356,7 @@ public class Main {
     	//90도 돌린.
     	for(int i=0; i<src.length; i++) {
     		for(int j=0; j<src[0].length; j++) {
-    			 rslt[i][j] = src[(N-1)/2-1-j][i]; //이렇게 반대로 잘못 돌리고 있었다. (반대로)
+    			 rslt[i][j] = src[(N-1)/2-1-j][i];
     		}
     	}
     	return rslt;
