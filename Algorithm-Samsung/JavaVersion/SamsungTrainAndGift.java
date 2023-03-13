@@ -73,14 +73,19 @@ public class Main {
 		//기차 움직이기
 		for(int turn=0; turn<K; turn++) {
 			//int turn=0;
+			System.out.println("turn: " + turn);
 			moveTrain();
-	//		print(board);
+//			print(board);
 	
-			//print(board);
+			print(board);
 	//		System.out.println(mapArray);
 			//공 날리기
-			throwGift(turn);
+			//throwGift(turn);
 			//print(board);
+			
+//			System.out.println(answer);
+//			
+//			System.out.println("=====================================");
 		}
 		
 		System.out.println(answer);
@@ -212,11 +217,11 @@ public class Main {
 		
 		//방향전환 부분
 		turn = turn%N;
-
-		if(turn == N-1) {
-			dirCount = (dirCount+1)%4;
-		}
-
+		
+		//이게 문제가 됐음 마지막꺼 날아가기전에 그냥 방향이 바껴버렸음
+//		if(turn == N-1) {
+//			dirCount = (dirCount+1)%4;
+//		}
 		
 		if(dirCount == 0) {
 			for(int j=0; j<N; j++) {
@@ -259,6 +264,11 @@ public class Main {
 				}
 			}
 			
+		}
+		
+		//side방향 전환
+		if(turn == N-1) {
+			dirCount = (dirCount+1)%4;
 		}
 		
 	}
