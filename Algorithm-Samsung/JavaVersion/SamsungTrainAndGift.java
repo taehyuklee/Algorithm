@@ -97,7 +97,6 @@ public class Main {
 				
 			}
 		}
-		//System.out.println(mapArray);
 	}
 	
 	public static void bfs(int x, int y, int team) {
