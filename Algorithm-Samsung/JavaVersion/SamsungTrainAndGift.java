@@ -39,7 +39,7 @@ public class Main {
 		}
 		System.out.println();
 	}
-	
+
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
@@ -70,22 +70,13 @@ public class Main {
 		//기차 각 팀에서 연결해서 만들어주기.
 		makeTrain();
 		
-		//기차 움직이기
 		for(int turn=0; turn<K; turn++) {
-			//int turn=0;
-			System.out.println("turn: " + turn);
+			//기차 움직이기
 			moveTrain();
-//			print(board);
-	
-			print(board);
-	//		System.out.println(mapArray);
+
 			//공 날리기
-			//throwGift(turn);
-			//print(board);
-			
-//			System.out.println(answer);
-//			
-//			System.out.println("=====================================");
+			throwGift(turn);
+
 		}
 		
 		System.out.println(answer);
@@ -120,28 +111,45 @@ public class Main {
 		lenIndx +=1;
 		
 		visit[x][y] = true;
-		//System.out.println("x:  " + x + "  y:    " + y);
-		
+
 		queue.add(node0);
 		
 		while(!queue.isEmpty()) {
 			
 			Node node = queue.poll();
 			
-			for(int dir=0; dir<4; dir++) {
-				int newX = node.x + dx[dir];
-				int newY = node.y + dy[dir];
-				
-				if(newX>=0 && newX<N && newY>=0 && newY<N  && visit[newX][newY] ==false) {
-					if(board[newX][newY] ==2 || board[newX][newY] ==3) {
-						Node newNode = new Node(newX, newY);
-						mapArray.get(team).put(lenIndx, newNode);
-						queue.add(newNode);
-						visit[newX][newY] = true;
-						lenIndx+=1;
+			if(lenIndx==2) {
+				for(int dir=0; dir<4; dir++) {
+					int newX = node.x + dx[dir];
+					int newY = node.y + dy[dir];
+					
+					if(newX>=0 && newX<N && newY>=0 && newY<N  && visit[newX][newY] ==false) {
+						if(board[newX][newY] ==2) {
+							Node newNode = new Node(newX, newY);
+							mapArray.get(team).put(lenIndx, newNode);
+							queue.add(newNode);
+							visit[newX][newY] = true;
+							lenIndx+=1;
+						}
+						}
+					}
+				}else {
+					for(int dir=0; dir<4; dir++) {
+						int newX = node.x + dx[dir];
+						int newY = node.y + dy[dir];
+						
+						if(newX>=0 && newX<N && newY>=0 && newY<N  && visit[newX][newY] ==false) {
+								
+							if(board[newX][newY] ==2 || board[newX][newY] ==3) {
+								Node newNode = new Node(newX, newY);
+								mapArray.get(team).put(lenIndx, newNode);
+								queue.add(newNode);
+								visit[newX][newY] = true;
+								lenIndx+=1;
+							}
+						}
 					}
 				}
-			}
 		}
 	}
 	
@@ -154,6 +162,7 @@ public class Main {
 			int headY_o=0;
 			int goHX=0;
 			int goHY=0;
+			boolean lastFlag = false;
 			
 			//그 팀의 기차 길이만큼
 			for(int len=1; len<=temaNodes.size(); len++) {
@@ -169,9 +178,14 @@ public class Main {
 						int newHY = headY_o + dy[dir];
 						
 						if(newHX>=0 && newHX<N && newHY>=0 && newHY<N) {
-							if(board[newHX][newHY] ==4) {
+							if(board[newHX][newHY] ==4 ) {
 								goHX = newHX;
 								goHY = newHY;
+							}else if(board[newHX][newHY] ==3) {
+								//꼬리 물기를 한다면?
+								goHX = newHX;
+								goHY = newHY;
+								lastFlag = true;
 							}
 						}
 					}
@@ -180,6 +194,8 @@ public class Main {
 					headNode.y = goHY;
 					//board 동기화
 					board[goHX][goHY] = 1;
+
+					
 				}else {
 					//다음주자들 온 길을 따라 붙는다.
 					//앞으로 나아갈길에 이전 선두주자에 있었던 좌표 -> goHX가 앞으로 갈 데이터가됨
@@ -193,19 +209,23 @@ public class Main {
 					//Map update & board 업데이트 (현재 기차칸을 앞으로 옮기기)
 					headNode.x = goHX;
 					headNode.y = goHY;
-	
+
 					board[goHX][goHY] = board[headX_o][headY_o];
+
 					
 					//과거 좌표를 현재의 좌표로 Update 다음 iteration을 위해서.
-					if(len == temaNodes.size()) {
+					if(len == temaNodes.size() && !lastFlag) {
 						//마지막일때는 4로 update
 						board[headX_o][headY_o] =4;	
 					}
-					//else {
-//						headX_o = goHX;
-//						headY_o = goHY;
-						
-					//}
+					
+					//마지막 꼬리 물기
+					if(len == temaNodes.size() && lastFlag) {
+						board[goHX][goHY] = 3;
+						board[headX_o][headY_o] =1;
+						lastFlag = false;
+					}
+
 				}
 				
 			}
@@ -217,16 +237,10 @@ public class Main {
 		
 		//방향전환 부분
 		turn = turn%N;
-		
-		//이게 문제가 됐음 마지막꺼 날아가기전에 그냥 방향이 바껴버렸음
-//		if(turn == N-1) {
-//			dirCount = (dirCount+1)%4;
-//		}
-		
+
 		if(dirCount == 0) {
 			for(int j=0; j<N; j++) {
 				if(board[turn][j] !=4 && board[turn][j] !=0) {
-//					System.out.println("x: " + turn + "  " + "y: " + j);
 					int order = findTrainOrder(turn, j);
 					
 					answer += order*order;
@@ -281,8 +295,8 @@ public class Main {
 		for(int team=1; team<=mapArray.size(); team++) {
 			Map<Integer, Node> train = mapArray.get(team);
 			
-			for(int len=1; len<=train.size(); len++) { //=을 빼먹어서
-				//System.out.println(train.get(len).x + " "+ train.get(len).y );
+			for(int len=1; len<=train.size(); len++) {
+
 				if(train.get(len).x ==x && train.get(len).y ==y) {
 					//좌표가 일치한다면 그때의 key를 가져온다.
 					keyTrain = len;
@@ -308,7 +322,6 @@ public class Main {
 			copyTrain.put(len, new Node(targetTrain.get(len)));
 		}
 
-		//System.out.println(copyTrain);
 		int start =0, startX=0, startY=0;
 		int end = 0, endX=0, endY=0;
 		
