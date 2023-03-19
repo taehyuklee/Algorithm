@@ -8,12 +8,13 @@ class Player{
 	int stat;
 	int score;
 	int weapon;
+	int totStat;
 	
 	
 	public int getDir() {
 		return dir;
 	}
-	public int getAbility() {
+	public int getStat() {
 		return stat;
 	}
 	public int getScore() {
@@ -22,8 +23,11 @@ class Player{
 	public int getWeapon() {
 		return weapon;
 	}
+	public int getTotStat() {
+		return totStat;
+	}
 	
-	public Player(int dir, int ability, int score, int weapon, int x, int y) {
+	public Player(int dir, int ability, int score, int weapon, int x, int y, int totStat) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -31,17 +35,16 @@ class Player{
 		this.stat = ability;
 		this.score = score;
 		this.weapon = weapon;
+		this.totStat = totStat;
 
 	}
 	
-	
-	
+
 	@Override
 	public String toString() {
 		return "Player [x=" + x + ", y=" + y + ", dir=" + dir + ", stat=" + stat + ", score=" + score + ", weapon="
-				+ weapon + "]";
+				+ weapon + ", totStat=" + totStat + "]";
 	}
-	
 	public Player(Player player) {
 		this.dir = player.dir;
 		this.stat = player.stat;
@@ -49,6 +52,7 @@ class Player{
 		this.weapon = player.weapon;
 		this.x = player.x;
 		this.y = player.y;
+		this.totStat = player.totStat;
 	}
 }
 
@@ -102,61 +106,55 @@ public class Main {
 				gunField[i][j] = new ArrayList<Integer>();
 				playerField[i][j] = new ArrayList<Player>();
 				
-				gunField[i][j].add(sc.nextInt());
+				int weapons = sc.nextInt();
+				if(weapons !=0)
+				gunField[i][j].add(weapons);
 				
 			}
 		}
-		
-//		printGun(gunField);
 		
 		for(int i=0; i<M; i++) {
 			int x = sc.nextInt()-1;
 			int y = sc.nextInt()-1;
 			int d = sc.nextInt();
 			int s = sc.nextInt();
-			Player player = new Player(d, s, 0, 0, x, y);
+			Player player = new Player(d, s, 0, 0, x, y, s+0);
 			playerField[x][y].add(player);
 			playerList.add(player);
 		}
-		
-//		printMan(playerField);
-//		System.out.println(playerList);
-		
-		//test heap memory sharing
-//		for(int i =0; i<manList.size(); i++) {
-//			manList.get(i).score = 100;
-//		}
-//		printMan(manField);
-		
 		
 		solution();
 		
 	}
 	
 	public static void solution() {
-		
-		//player 한명이 움직인다.
-		
-		Player player = playerList.get(0);
-		
-//		printMan(playerField);
-//		System.out.println(playerList);
-//		System.out.println();
-//		
-//		for(int i=0; i<15; i++) {
-			boolean isPlayer = movePlayer(player);
+
+		for(int i=0; i<K; i++) {
 			
-			if(isPlayer) {
-				//player가 있으면 싸움.
+			for(int inx=0; inx<playerList.size(); inx++) {
 				
-			}else {
-				//player가 없으면 무기 획득.
-				getWeapon(player);
+				Player player = playerList.get(inx);
 				
+				//player가 움직인다.
+				boolean isPlayer = movePlayer(player);
+				
+				if(isPlayer) {
+					//player가 있으면 싸움.
+					battle(player);
+					
+				}else {
+					//player가 없으면 무기 획득.
+					getWeapon(player);
+					
+				}
+
 			}
-			
-			
-//		}
+		}
+		
+		//solution
+		for(int i=0; i<playerList.size(); i++) {
+			System.out.print(playerList.get(i).score + " ");
+		}
 	}
 	
 	public static boolean movePlayer(Player player) {
@@ -220,25 +218,114 @@ public class Main {
 		
 		ArrayList<Integer> weaponsList = gunField[playerX][playerY];
 		
+		//현재 player가 가지고 있는 무
 		int curWeapon = player.weapon;
 		
 		if(curWeapon ==0) {
 			//무기가 없을때는
 			int newWeapon = chooseWeapon(weaponsList);
 			player.weapon = newWeapon;
+			player.totStat = newWeapon + player.stat;
 		}else {
-			//무기를 가지고 있을때,
+			//무기를 가지고 있을때, 자기 무기도 넣어서 최고 무기를 뽑아낸다.
+			weaponsList.add(curWeapon);
 			
+			int newWeapon = chooseWeapon(weaponsList);
+			player.weapon = newWeapon;
+			player.totStat = newWeapon + player.stat;
 			
 		}
 	}
 	
 	public static int chooseWeapon(ArrayList<Integer> weaponsList) {
-		Collections.sort(weaponsList, Comparator.reverseOrder());
-		int bestWeapon = weaponsList.get(0);
-		weaponsList.remove(0); //뽑은 무기는 제거해준다 땅바닥에서.
 		
+		int bestWeapon =0;
+		
+		if(weaponsList.size() !=0) {
+			Collections.sort(weaponsList, Comparator.reverseOrder());
+			bestWeapon = weaponsList.get(0);
+			weaponsList.remove(0); //뽑은 무기는 제거해준다 땅바닥에서.
+		}
+
 		return bestWeapon;
 	}
 	
+	public static void battle(Player player) {
+		
+		//두 플레이어가 싸움.
+		int curX = player.x;
+		int curY = player.y;
+		
+		ArrayList<Player> battlePlayer = playerField[curX][curY];
+		
+		//싸우는 것을 비교로 구현했다.
+		Collections.sort(battlePlayer, Comparator.comparing(Player::getTotStat).thenComparing(Player::getStat).reversed());
+		
+		Player winnerPlayer = battlePlayer.get(0);
+		Player loserPlayer = battlePlayer.get(1);
+		
+		//승자는 승점을 챙긴다.
+		winnerPlayer.score += winnerPlayer.totStat - loserPlayer.totStat;
+		
+		//진 player는 총을 내려놓는다.
+		int loserWeapon = loserPlayer.weapon;
+		
+		if(loserWeapon !=0) { //loser 무기가있을때
+			gunField[curX][curY].add(loserWeapon);
+			loserPlayer.totStat -= loserPlayer.weapon; //totStat에서 무기 점수 빼주
+			loserPlayer.weapon =0; //무기도 제
+		}
+		
+		//진 Player는 움직인다.
+		loserMove(loserPlayer);
+		
+		//움직인 칸에서 무기를 얻는다.
+		getWeapon(loserPlayer);
+		
+		//이긴 Player의 행동.
+		winnerMove(winnerPlayer);
+		
+		
+		
+		
+	}
+	
+	public static void loserMove(Player player) {
+
+		int playerX = player.x;
+		int playerY = player.y;
+		
+		boolean empty = false;
+		
+		while(!empty) {
+
+			int newX = playerX + dx[player.dir];
+			int newY = playerY + dy[player.dir];
+			
+			if(newX>=0 && newX<N && newY>=0 && newY<N && playerField[newX][newY].size()==0) {
+				
+				//list 에 있는 player 위치 업데이트. (객체 업데이
+				player.x = newX; player.y = newY;
+	
+				//field에서 업데이트 field에 업데이트 하
+				playerField[newX][newY].add(player); //움직인 좌표에 추
+				playerField[playerX][playerY].remove(player); //기존의 맵에서 제거해주기.
+				empty = true;
+			}else {
+				//방향을 반대로 바꾼다. (90도 회전해서 방향을 바꾼다)
+				player.dir = (player.dir +1)%4;
+				
+			}
+		}
+		
+	}
+	
+	
+	public static void winnerMove(Player player) {
+
+		int playerX = player.x;
+		int playerY = player.y;
+		
+		getWeapon(player);
+	}
 }
