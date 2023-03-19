@@ -45,15 +45,6 @@ class Player{
 		return "Player [x=" + x + ", y=" + y + ", dir=" + dir + ", stat=" + stat + ", score=" + score + ", weapon="
 				+ weapon + ", totStat=" + totStat + "]";
 	}
-	public Player(Player player) {
-		this.dir = player.dir;
-		this.stat = player.stat;
-		this.score = player.score;
-		this.weapon = player.weapon;
-		this.x = player.x;
-		this.y = player.y;
-		this.totStat = player.totStat;
-	}
 }
 
 
