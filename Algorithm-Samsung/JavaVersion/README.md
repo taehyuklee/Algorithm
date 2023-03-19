@@ -11,3 +11,10 @@ https://www.codetree.ai/training-field/frequent-problems/artistry - subRotation,
 
 Train&Gift - (codetree)
 추가 test case - https://jealous-watch-86a.notion.site/df7168a3952b4d1289235b5da7190cc3
+
+TreeEradication - (codetree)
+https://www.codetree.ai/training-field/frequent-problems/tree-kill-all - 문제 주소
+
+BattleField - (codetree)
+(https://www.codetree.ai/training-field/frequent-problems/battle-ground/) - 문제 주소
+
