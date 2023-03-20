@@ -49,16 +49,35 @@ class Box{
 
 class Belt{
 	int beltNum;
-	ArrayList<Box> inBox;
+	int firstBox;
+	int lastBox;
+	HashMap<Integer, Box> inBox;
 	
-	public Belt(int beltNum, ArrayList<Box> inBox) {
+	public Belt(int beltNum, HashMap<Integer, Box> inBox, int firstBox, int lastBox) {
 		this.beltNum = beltNum;
 		this.inBox =inBox;
+		this.firstBox = firstBox;
+		this.lastBox = lastBox;
 	}
 
+	
 	@Override
 	public String toString() {
-		return "Belt [beltNum=" + beltNum + ", inBox=" + inBox + "]";
+		return "Belt [beltNum=" + beltNum + ", firstBox=" + firstBox + ", lastBox=" + lastBox + ", inBox=" + inBox
+				+ "]";
+	}
+
+
+	public void add(Box box) {
+		this.inBox.put(box.id, box);
+	}
+	
+	public Box getFistBox() {
+		return this.inBox.get(this.firstBox);
+	}
+	
+	public Box getLastBox() {
+		return this.inBox.get(this.lastBox);
 	}
 	
 }
@@ -166,19 +185,23 @@ public class Main {
 		int index=0;
 		for(int b=0; b<M; b++) {
 			
-			ArrayList<Box> boxList = new ArrayList<>();
+			HashMap<Integer, Box> boxMap = new HashMap<>();
+			int firstBox = 0;
+			int lastBox = 0;
 			for(int i=0; i<div; i++) {
 				
 				if(index%div==0) { //index%(M+1)==0
-					boxList.add(new Box(idArray[index], wArray[index], -1, idArray[index+1]));
+					boxMap.put(idArray[index], new Box(idArray[index], wArray[index], -1, idArray[index+1]));
+					firstBox = idArray[index]; //첫 박스에 대한 id 구하기
 				}else if(index%div==div-1) { //index%(M+1)==div-1
-					boxList.add(new Box(idArray[index], wArray[index], idArray[index-1], -1));
+					boxMap.put(idArray[index], new Box(idArray[index], wArray[index], idArray[index-1], -1));
+					lastBox = idArray[index]; //마지막 박스에 대한 id 구하기
 				}else {
-					boxList.add(new Box(idArray[index], wArray[index], idArray[index-1], idArray[index+1]));
+					boxMap.put(idArray[index], new Box(idArray[index], wArray[index], idArray[index-1], idArray[index+1]));
 				}
 				index+=1;
 			}
-			beltList.add(new Belt(b, boxList));
+			beltList.add(new Belt(b, boxMap, firstBox, lastBox));
 		}
 		
 		//sc.close();
@@ -189,43 +212,31 @@ public class Main {
 	
 	public static void unloadStuff(int w_max) {
 		
-//		print(beltList);
+		print(beltList);
 		
 		int unloadedW =0;
 		
 		//belt는 한 바퀴 돌릴수밖에 없어 full scan으로
 		for(int b=0; b<beltList.size(); b++) {
 			Belt belt = beltList.get(b);
-			ArrayList<Box> beltBoxList= belt.inBox;
-			Box frontBox = beltBoxList.get(0);
+			HashMap<Integer, Box> beltBoxMap= belt.inBox;
+			Box frontBox = belt.getFistBox();
 			
 			if(frontBox.weight<=w_max){
 				unloadedW += frontBox.weight; //무게를 더해준다.
 				belt.inBox.remove(frontBox); //belt에서 하차시켜준다
-				
-				//box에서 앞의 관계를 끊어준다.
-				belt.inBox.get(0).cutPrev();
+
 				
 			}else {
 				//만약 무게가 더 무겁다면 맨 뒤로 보내준다.
-				Box lastBox = beltBoxList.get(beltBoxList.size()-1); //이게 Complexity가 얼마인지 모르겠다. (확인해보기)
-				int lastBoxId = lastBox.id;
-				frontBox.cutNext();
-				frontBox.connectPrev(lastBoxId);
-				lastBox.connectNext(frontBox.id);
-				
-				//Doubly linked-list 연결 고리를 모두 바꿨으면 이제 위치만 바꿔주자
-				beltBoxList.remove(frontBox);
-				beltBoxList.add(frontBox); //add하면 마지막에 add되니까
-				beltBoxList.get(0).cutPrev(); //위치 바꿔준 처음꺼에 대한 Prev관계를 끊어준다.
+
 			}
 
 		}
 		
 		//하차된 무게 출력
 		System.out.println(unloadedW);
-		
-//		print(beltList);
+
 	}
 
 	
