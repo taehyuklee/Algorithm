@@ -20,7 +20,30 @@ class Box{
 	public String toString() {
 		return "Box [id=" + id + ", weight=" + weight + ", prev=" + prev + ", next=" + next + "]";
 	}
-
+	
+	public void cutPrev() {
+		this.prev = -1;
+	}
+	
+	public void cutNext() {
+		this.next = -1;
+	}
+	
+	public int getPrev() {
+		return this.prev;
+	}
+	
+	public int getNext() {
+		return this.next;
+	}
+	
+	public void connectPrev(int prev) {
+		this.prev = prev;
+	}
+	
+	public void connectNext(int next) {
+		this.next = next;
+	}
 
 }
 
@@ -91,15 +114,17 @@ public class Main {
 //			int targetNum = Integer.parseInt(numsString[1]);
 		
 		for(int i=0; i<Q-1; i++) {
+			
 			int opsNum = sc.nextInt();
 			int targetNum = sc.nextInt();
 			
 			if(opsNum == 200) {
 				//2. 물건 하차
-				unloadStuff();
+				unloadStuff(targetNum);
 			
 			}else if(opsNum == 300) {
 				//3. 물건 제거
+				removeStuff(targetNum);
 				
 			}else if(opsNum == 400) {
 				//4. 물건 확인
@@ -162,10 +187,52 @@ public class Main {
 	}
 	
 	
-	public static void unloadStuff() {
+	public static void unloadStuff(int w_max) {
 		
-		print(beltList);
+//		print(beltList);
+		
+		int unloadedW =0;
+		
+		//belt는 한 바퀴 돌릴수밖에 없어 full scan으로
+		for(int b=0; b<beltList.size(); b++) {
+			Belt belt = beltList.get(b);
+			ArrayList<Box> beltBoxList= belt.inBox;
+			Box frontBox = beltBoxList.get(0);
+			
+			if(frontBox.weight<=w_max){
+				unloadedW += frontBox.weight; //무게를 더해준다.
+				belt.inBox.remove(frontBox); //belt에서 하차시켜준다
+				
+				//box에서 앞의 관계를 끊어준다.
+				belt.inBox.get(0).cutPrev();
+				
+			}else {
+				//만약 무게가 더 무겁다면 맨 뒤로 보내준다.
+				Box lastBox = beltBoxList.get(beltBoxList.size()-1); //이게 Complexity가 얼마인지 모르겠다. (확인해보기)
+				int lastBoxId = lastBox.id;
+				frontBox.cutNext();
+				frontBox.connectPrev(lastBoxId);
+				lastBox.connectNext(frontBox.id);
+				
+				//Doubly linked-list 연결 고리를 모두 바꿨으면 이제 위치만 바꿔주자
+				beltBoxList.remove(frontBox);
+				beltBoxList.add(frontBox); //add하면 마지막에 add되니까
+				beltBoxList.get(0).cutPrev(); //위치 바꿔준 처음꺼에 대한 Prev관계를 끊어준다.
+			}
+
+		}
+		
+		//하차된 무게 출력
+		System.out.println(unloadedW);
+		
+//		print(beltList);
+	}
+
+	
+	public static void removeStuff(int r_id) {
+		
 		
 		
 	}
+
 }
