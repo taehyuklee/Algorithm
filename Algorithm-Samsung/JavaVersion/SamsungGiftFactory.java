@@ -116,22 +116,7 @@ public class Main {
 		
 		//1. 공장설립
 		constFactory(sc);
-		
-		//sc.nextLine();
-		
-//		while(true) {
-		//sc.nextLine(); // 한줄 넘어갈때마다 뭐지 이게
-		
-//		for(int i=0; i<10000; i++) {
-//			String nextString = sc.nextLine();
-//			if(nextString == "") {
-//				break;
-//			}
-//			String[] numsString= nextString.split(" ");
-//
-//			int opsNum = Integer.parseInt(numsString[0]);
-//			int targetNum = Integer.parseInt(numsString[1]);
-		
+
 		for(int i=0; i<Q-1; i++) {
 			
 			int opsNum = sc.nextInt();
@@ -180,9 +165,6 @@ public class Main {
 		for(int i=0; i <N; i++) {
 			wArray[i] = sc.nextInt();
 		}
-//		System.out.println();
-//		print(idArray);
-//		print(wArray);
 		
 		int index=0;
 		for(int b=1; b<=M; b++) {
@@ -205,23 +187,22 @@ public class Main {
 			}
 			beltList.add(new Belt(b, boxMap, firstBox, lastBox));
 		}
-		
-		//sc.close();
-
-//		print(beltList);
 	}
 	
 	
 	public static void unloadStuff(int w_max) {
-		
-//		print(beltList);
-		
+
 		int unloadedW =0;
 		
 		//belt는 한 바퀴 돌릴수밖에 없어 full scan으로
 		for(int b=0; b<beltList.size(); b++) {
 			Belt belt = beltList.get(b);
 			HashMap<Integer, Box> beltBoxMap= belt.inBox;
+			
+			if(beltBoxMap.size() ==0){
+				continue;
+			}
+			
 			Box frontBox = belt.getFistBox();
 			
 			if(frontBox.weight<=w_max){
@@ -231,9 +212,13 @@ public class Main {
 				belt.inBox.remove(frontBox.id); //belt에서 하차시켜준다
 				
 				//하차 이후에 바로 다음 박스 Linked-list 재정리//
-				Box nextBox = belt.inBox.get(nextBoxId); // 맨 처음에 올 박스를 가져온다.
-				nextBox.cutPrev(); //새로 맨 앞의 박스가 된 것에서 prev를 끊어준다.
-				belt.firstBox = nextBoxId; //처음 박스 Id를 기록해준다.
+				if(nextBoxId != -1) {
+					Box nextBox = belt.inBox.get(nextBoxId); // 맨 처음에 올 박스를 가져온다.
+					if(nextBox != null) { //null처리
+						nextBox.cutPrev(); //새로 맨 앞의 박스가 된 것에서 prev를 끊어준다.
+						belt.firstBox = nextBoxId; //처음 박스 Id를 기록해준다.
+					}
+				}
 				
 			}else {
 				//만약 무게가 더 무겁다면 맨 뒤로 보내준다.
@@ -242,10 +227,13 @@ public class Main {
 				Box lastBox = belt.inBox.get(lastBoxId);
 				
 				//맨 앞으로 올 box에 대해서도 정리
-				Box secondBox = belt.inBox.get(frontBox.next);
-				secondBox.prev = -1;
-				belt.firstBox = secondBox.id;
-				
+				if(frontBox.next != -1) { // frontBox가 하나밖에 없을때
+					Box secondBox = belt.inBox.get(frontBox.next);
+					if(secondBox != null) { //null 처리
+						secondBox.prev = -1;
+						belt.firstBox = secondBox.id;
+					}
+				}
 				
 				//맨 뒤로 보낼 박스 Link 재정리
 				frontBox.next = -1;
@@ -263,8 +251,6 @@ public class Main {
 		
 		//하차된 무게 출력
 		System.out.println(unloadedW);
-		//print(beltList);
-
 	}
 
 	
@@ -284,26 +270,30 @@ public class Main {
 					//box가 맨 앞일때 그 다음 박스 맨 앞으로 땡기기
 					int nextBoxId = targetBox.next;
 					Box nextBox = belt.inBox.get(nextBoxId);
-					nextBox.prev = -1;
-					belt.firstBox = nextBox.id;
-					
-					//맨 앞의 박스 제거
-					belt.inBox.remove(r_id);
-					
-					isRemove = true;
+					if(nextBox != null) { //null처리
+						nextBox.prev = -1;
+						belt.firstBox = nextBox.id;
+						
+						//맨 앞의 박스 제거
+						belt.inBox.remove(r_id);
+						
+						isRemove = true;
+					}
 					
 				}else if(targetBox.next==-1) {
 					//box가 맨 뒤일때
 					//맨 뒤의 박스에서 바로 앞 박스 맨 뒤 박스로 바꾸기
 					int prevBoxId = targetBox.prev;
 					Box prevBox = belt.inBox.get(prevBoxId);
-					prevBox.next = -1;
-					belt.lastBox = prevBox.id;
-					
-					//맨 뒤 박스 제거
-					belt.inBox.remove(r_id);		
-					
-					isRemove = true;
+					if(prevBox != null) { //null처리
+						prevBox.next = -1;
+						belt.lastBox = prevBox.id;
+						
+						//맨 뒤 박스 제거
+						belt.inBox.remove(r_id);		
+						
+						isRemove = true;
+					}
 					
 				}else {	
 					//box가 중간일때
@@ -311,13 +301,15 @@ public class Main {
 					Box nextBox = belt.inBox.get(targetBox.next);
 					Box prevBox = belt.inBox.get(targetBox.prev);
 					
-					nextBox.prev = prevBox.id;
-					prevBox.next = nextBox.id;
-					
-					//박스 제거
-					belt.inBox.remove(r_id);
-					
-					isRemove = true;
+					if(nextBox !=null && prevBox !=null) { //null 처리
+						nextBox.prev = prevBox.id;
+						prevBox.next = nextBox.id;
+						
+						//박스 제거
+						belt.inBox.remove(r_id);
+						
+						isRemove = true;
+					}
 				}
 				
 			}
@@ -329,8 +321,6 @@ public class Main {
 		}else {
 			System.out.println(-1);
 		}
-		
-		//print(beltList);
 
 	}
 
@@ -349,36 +339,37 @@ public class Main {
 				Box targetBox = belt.inBox.get(f_id);
 				int willLastBoxId = targetBox.prev;
 				
-				
-				//to here
-				int lastBoxId = belt.lastBox;
-				Box toBox = belt.inBox.get(lastBoxId);
-				
-				//firstBox (위의 박스들을 이 박스 앞에 놓아줘야 한다)
-				int firstBoxId = belt.firstBox;
-				Box firstBox = belt.inBox.get(firstBoxId);
-				
-				//연결시켜준다. 맨 뒤에를 맨 앞의 박스 앞으로
-				firstBox.prev = toBox.id;
-				toBox.next = firstBox.id;
-				
-				//맨 앞의 박스가 바뀐다.
-				targetBox.prev = -1;
-				belt.firstBox = targetBox.id;
-				
-				//맨 뒤의 박스도 바뀐다.
-//				belt.lastBox = targetBox.prev;
-				Box willLastBox = belt.inBox.get(willLastBoxId);
-				willLastBox.next = -1;
-				belt.lastBox = willLastBox.id;
-				
+				if(willLastBoxId !=-1) { //혼자 남아있을때는 그냥 넘기면 된다.
+					//to here
+					int lastBoxId = belt.lastBox;
+					Box toBox = belt.inBox.get(lastBoxId);
+					
+					//firstBox (위의 박스들을 이 박스 앞에 놓아줘야 한다)
+					int firstBoxId = belt.firstBox;
+					Box firstBox = belt.inBox.get(firstBoxId);
+					
+					//연결시켜준다. 맨 뒤에를 맨 앞의 박스 앞으로
+					if(firstBox !=null && toBox !=null) {
+						firstBox.prev = toBox.id;
+						toBox.next = firstBox.id;
+						
+						//맨 앞의 박스가 바뀐다.
+						targetBox.prev = -1;
+						belt.firstBox = targetBox.id;
+						
+						//맨 뒤의 박스도 바뀐다.
+						Box willLastBox = belt.inBox.get(willLastBoxId);
+						willLastBox.next = -1;
+						belt.lastBox = willLastBox.id;
+					}
+					
+					
+				}
 				targetBeltNum = belt.beltNum;
 			}
 		}
 
 		System.out.println(targetBeltNum);
-		
-		//print(beltList);
 
 	}
 	
@@ -419,29 +410,29 @@ public class Main {
 				
 
 				//연결작업
-				toLastBox.next = asFirstBox.id;
-				asFirstBox.prev = toLastBox.id;
+				if(toLastBox !=null && asFirstBox !=null && asLastBox !=null && toFirstBox != null) { //null 처리
+					toLastBox.next = asFirstBox.id;
+					asFirstBox.prev = toLastBox.id;
+	
+					asLastBox.cutNext(); //마지막 부분은 연결 끊어주고 (원래 되어 있었겠지만) 혹시
+					toFirstBox.cutPrev(); //처음 부분도 연결 끊어주고 (원래 되어 있었겠지만) 혹시
+					
+					//박스들을 옮겨준다.
+					nextBelt.inBox.putAll(asBelt);
 				
-//				System.out.println(asFirstBox.id + " " + toLastBox.id );
-
-				asLastBox.cutNext(); //마지막 부분은 연결 끊어주고 (원래 되어 있었겠지만) 혹시
-				toFirstBox.cutPrev(); //처음 부분도 연결 끊어주고 (원래 되어 있었겠지만) 혹시
 				
-				//박스들을 옮겨준다.
-				nextBelt.inBox.putAll(asBelt);
-				
-				//망가진 belt를 없애준다.
-				beltList.remove(belt);
-				
-				nextBelt.firstBox = toFirstBox.id;
-				nextBelt.lastBox = asLastBox.id;
+					//망가진 belt를 없애준다.
+					beltList.remove(belt);
+					
+					nextBelt.firstBox = toFirstBox.id;
+					nextBelt.lastBox = asLastBox.id;
+				}
 				
 				//break;
 				malPrint = b_num;
 			}
 
 		}
-		//print(beltList);
 		System.out.println(malPrint);
 		
 	}
