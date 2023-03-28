@@ -126,12 +126,23 @@ public class Main {
 		
 		//visitMap안에 내용들을 모두 보고싶어도 index가 없기때문에 볼수가 없다.
 		Set<Integer> keys = visitMap.keySet();
+		System.out.println(keys);
 		
-		for(int i=0; i<visitMap.size(); i++) {
+//		for(int i=0; i<visitMap.size(); i++) {
+//			Iterator iter = keys.iterator();
+//			int key = (int) iter.next();
+//			System.out.println(visitMap.get(key));
+//			if(visitMap.get(key) == true) {
+//				cnt +=1;
+//			}
+//		}
+//		
+		while(keys.iterator().hasNext()) {
 			int key = keys.iterator().next();
+			System.out.println(visitMap.get(key));
 			if(visitMap.get(key) == true) {
 				cnt +=1;
-			}
+			
 		}
 		
 		if(cnt == visitMap.size()) { // 끝나는 조건
@@ -158,6 +169,7 @@ public class Main {
 //				answerDfs.remove(answerDfs.size()-1);
 //				visitMap.put(newNum, false);
 			}
+		}
 		}
 		
 		
