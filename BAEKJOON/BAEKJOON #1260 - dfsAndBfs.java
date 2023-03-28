@@ -9,8 +9,9 @@ public class Main {
 	static int V;
 	static ArrayList<Integer>[] array;
 	static HashMap<Integer, Boolean> visitMap = new HashMap<>();
-	static HashSet<Integer> visit;
-	static ArrayList<Integer> answerDfs;
+	static HashMap<Integer, Boolean> visitMap2 = new HashMap<>();
+	static ArrayList<Integer> answerDfs = new ArrayList<>();
+	static ArrayList<Integer> answerBfs = new ArrayList<>();
 	
 	public static void print(ArrayList<Integer>[] array) {
 		
@@ -36,7 +37,6 @@ public class Main {
 		N = sc.nextInt();
 		M = sc.nextInt();
 		V = sc.nextInt()-1;
-		visit = new HashSet<Integer>();
 		
 		array = new ArrayList[N]; //array 껍데기를 만들었으니
 
@@ -49,8 +49,8 @@ public class Main {
 			int node2 = sc.nextInt()-1;
 			array[node1].add(node2);
 			array[node2].add(node1);
-			visitMap.put(node1, false);
-			visitMap.put(node2, false);
+			visitMap.put(node1, false); visitMap2.put(node1, false);
+			visitMap.put(node2, false); visitMap2.put(node2, false);
 
 		}
 		
@@ -70,14 +70,24 @@ public class Main {
 	
 	public static void solution() {
 		
-		stackDfs();
+		//System.out.println(visitMap);
 		
-		
-		int dept=1;
-		int init = V;
+		//stackDfs();
+		int dept=1; int init = V;
+		answerDfs.add(V); visitMap.put(V, true);
 		recursiveDfs(dept, init);
 		
-		BFS();
+	
+		bfs(init);
+
+		for(int i=0; i<answerDfs.size(); i++) {
+			answerDfs.set(i, answerDfs.get(i)+1); //set을 이렇게 사용하네;;
+			answerBfs.set(i, answerBfs.get(i)+1);
+		}
+		
+		//답
+		System.out.println(answerDfs);
+		System.out.println(answerBfs);
 		
 	}
 	
@@ -111,30 +121,76 @@ public class Main {
 	
 	public static void recursiveDfs(int dept, int init) {
 		
-		if(dept ==3) { // 끝나는 조건
+		//종료 조건
+		int cnt = 0;
+		
+		//visitMap안에 내용들을 모두 보고싶어도 index가 없기때문에 볼수가 없다.
+		Set<Integer> keys = visitMap.keySet();
+		
+		for(int i=0; i<visitMap.size(); i++) {
+			int key = keys.iterator().next();
+			if(visitMap.get(key) == true) {
+				cnt +=1;
+			}
+		}
+		
+		if(cnt == visitMap.size()) { // 끝나는 조건
 			return;
 		}
 
 		ArrayList<Integer> exploreArray = array[init];
-		answerDfs.add(init);
-		visitMap.put(init, true);
-		
+		System.out.println(visitMap);
+		System.out.println("answer " + answerDfs);
+		System.out.println(exploreArray);
+//		
 		for(int i=0; i<exploreArray.size(); i++) {
 			
-			int newNum = exploreArray.get(i);
-			int newDept = dept+1;		
-			
-			recursiveDfs(newNum, newDept);
-			
-			visitMap.put(newNum, false);
-			
+			if(visitMap.get(exploreArray.get(i)) == false) {
+				int newNum = exploreArray.get(i);
+				int newDept = dept+1;		
+				
+				answerDfs.add(newNum);
+				visitMap.put(newNum, true);
+				
+				recursiveDfs(newNum, newDept);
+
+				//원래 끝의 조건이 확실한 DFS같은 경우 이렇게 처리해준다
+//				answerDfs.remove(answerDfs.size()-1);
+//				visitMap.put(newNum, false);
+			}
 		}
 		
 		
 
 	}
 	
-	public static void BFS() {
+	
+	public static void bfs(int init) {
+		
+		Queue<Integer> q = new LinkedList<>();
+		q.add(init);
+		answerBfs.add(init);
+		
+		visitMap2.put(init, true);
+		
+		while(!q.isEmpty()) {
+			
+			int curInt = q.poll();
+			
+			ArrayList<Integer> arrayListInt = array[curInt];
+			
+			for(int i=0; i<arrayListInt.size(); i++) {
+				
+				int newInt = arrayListInt.get(i);
+				
+				if(visitMap2.get(newInt) != true) {
+					q.add(newInt);
+					visitMap2.put(newInt, true);
+					answerBfs.add(newInt);
+				}
+				
+			}	
+		}
 		
 		
 		
