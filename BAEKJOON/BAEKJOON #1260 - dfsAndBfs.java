@@ -38,6 +38,10 @@ public class Main {
 		M = sc.nextInt();
 		V = sc.nextInt()-1;
 		
+		if(V + 1 >N) {
+			N = V+1;
+		}
+		
 		array = new ArrayList[N]; //array 껍데기를 만들었으니
 
 		for(int i=0; i<N; i++) {
@@ -51,7 +55,6 @@ public class Main {
 			array[node2].add(node1);
 			visitMap.put(node1, false); visitMap2.put(node1, false);
 			visitMap.put(node2, false); visitMap2.put(node2, false);
-
 		}
 		
 		
@@ -60,7 +63,7 @@ public class Main {
 			Collections.sort(array[i]);	
 		}
 		
-		print(array);
+		//print(array);
 		
 		//visitList = visit.stream().collect(Collectors.toList());
 
@@ -85,9 +88,14 @@ public class Main {
 			answerBfs.set(i, answerBfs.get(i)+1);
 		}
 		
-		//답
-		System.out.println(answerDfs);
-		System.out.println(answerBfs);
+		//답 출력 형식이 틀렸었다 (그냥 answerDfs, answerBfs 두개를 쌩으로 출력했다)
+		for(int j=0; j<answerDfs.size(); j++) {
+			System.out.print(answerDfs.get(j) +" ");
+		}
+		System.out.println();
+		for(int j=0; j<answerBfs.size(); j++) {
+			System.out.print(answerBfs.get(j) + " ");
+		}
 		
 	}
 	
@@ -126,7 +134,7 @@ public class Main {
 		
 		//visitMap안에 내용들을 모두 보고싶어도 index가 없기때문에 볼수가 없다.
 		Set<Integer> keys = visitMap.keySet();
-		System.out.println(keys);
+//		System.out.println(keys);
 		
 //		for(int i=0; i<visitMap.size(); i++) {
 //			Iterator iter = keys.iterator();
@@ -136,24 +144,24 @@ public class Main {
 //				cnt +=1;
 //			}
 //		}
-//		
+	
 		while(keys.iterator().hasNext()) {
 			int key = keys.iterator().next();
-			System.out.println(visitMap.get(key));
+//			System.out.println(visitMap.get(key));
 			if(visitMap.get(key) == true) {
 				cnt +=1;
-			
-		}
+			}
 		
 		if(cnt == visitMap.size()) { // 끝나는 조건
 			return;
 		}
-
+		
+//		System.out.println("in it :    " + init);
 		ArrayList<Integer> exploreArray = array[init];
-		System.out.println(visitMap);
-		System.out.println("answer " + answerDfs);
-		System.out.println(exploreArray);
-//		
+//		System.out.println(visitMap);
+//		System.out.println("answer " + answerDfs);
+//		System.out.println(exploreArray);
+		
 		for(int i=0; i<exploreArray.size(); i++) {
 			
 			if(visitMap.get(exploreArray.get(i)) == false) {
@@ -163,7 +171,7 @@ public class Main {
 				answerDfs.add(newNum);
 				visitMap.put(newNum, true);
 				
-				recursiveDfs(newNum, newDept);
+				recursiveDfs(newDept, newNum); //recursive args를 반대로 넣었다;;
 
 				//원래 끝의 조건이 확실한 DFS같은 경우 이렇게 처리해준다
 //				answerDfs.remove(answerDfs.size()-1);
@@ -171,9 +179,6 @@ public class Main {
 			}
 		}
 		}
-		
-		
-
 	}
 	
 	
