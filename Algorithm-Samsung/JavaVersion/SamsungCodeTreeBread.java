@@ -124,7 +124,7 @@ public class Main {
 		for(int i=0; i<M; i++) {
 			personList.add(new Person(sc.nextInt()-1, sc.nextInt()-1));
 		}
-	
+		
 		solution();
 		
 	}
@@ -132,15 +132,16 @@ public class Main {
 	
 	public static void solution() {
 		
+		//목표 편의점 -> 베이스캠프 setting해줘야함 (이건 미리 setting하면 안됨) - 할때마다 달라짐.
 		while(true) {
 			
 			answer+=1;
-
+			
 			//if(map위에 사람이 있다면)
 			if(onTheMap.size() !=0) {
 				
 				for(int i=0; i<onTheMap.size(); i++) {
-					
+
 					Person person = onTheMap.get(i);
 			
 					//1번 본인이 가고싶은 방향으로 1칸 움직임
@@ -151,8 +152,7 @@ public class Main {
 				copyOnMap(onTheMap, onTheMap2);
 				for(int i=0; i<onTheMap2.size(); i++) {
 					//2번 해당편의점에 도달 그 칸은 막힘
-					Person person = onTheMap2.get(i); //두개를 한번에 못걸러냄 위에서 처럼 제거하면서 사이즈가 달라지는 현
-					//걸러내기 전 전체 맵: [Person [targetX=0, targetY=2, baseX=0, baseY=0, curX=0, curY=2], Person [targetX=0, targetY=1, baseX=1, baseY=1, curX=0, curY=1]] 두개를 한꺼번에 걸러야
+					Person person = onTheMap2.get(i); //두개를 한번에 못걸러냄 위에서 처럼 제거하면서 사이즈가 달라지는 현상.
 					finish(person);
 				}
 				
@@ -165,13 +165,14 @@ public class Main {
 				//3번 t<=m base로 이동 (남은 사람이 있으면)
 				Person person = personList.remove(0);
 				startBase(person);
-	
-				//시뮬레이션 종료 시점
-				if(onTheMap.size() ==0 && personList.size()==0) {
-					break;
-				}
 
 			}
+			
+			//시뮬레이션 종료 시점
+			if(onTheMap.size() ==0 && personList.size()==0) {
+				break;
+			}
+
 		}
 		
 		System.out.println(answer);
@@ -193,7 +194,7 @@ public class Main {
 		}
 		
 		Collections.sort(candidate, Comparator.comparing(BaseNode::getDept).thenComparing(BaseNode::getBaseX).thenComparing(BaseNode::getBaseY));
-		
+
 		//baseCamp가 선택됨.
 		BaseNode startBase = candidate.get(0);
 		
@@ -259,6 +260,7 @@ public class Main {
 	public static void move(Person person) {
 		
 		visit = new boolean[N][N]; //visit을 초기화 안해서 또 틀렸음.
+
 		BaseNode targetBaseNode = exploreBfs(person);
 		targetBaseNode.traceList.get(0);
 
