@@ -165,16 +165,18 @@ public class Main {
 				//3번 t<=m base로 이동 (남은 사람이 있으면)
 				Person person = personList.remove(0);
 				startBase(person);
+	
+				//시뮬레이션 종료 시점
+				if(onTheMap.size() ==0 && personList.size()==0) {
+					break;
+				}
 
-			//시뮬레이션 종료 시점
-			if(onTheMap.size() ==0 && personList.size()==0) {
-				break;
 			}
-
 		}
 		
 		System.out.println(answer);
 
+		
 	}
 	
 	
