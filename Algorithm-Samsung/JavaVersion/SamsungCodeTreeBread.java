@@ -80,13 +80,14 @@ class Node{
 
 public class Main {
 	
-	private static int M, N;
+	private static int M, N, answer=0;
 	private static int[] dx = {-1,0,0,1};
 	private static int[] dy = {0,-1,1,0};
 	private static int[][] board;
 	private static boolean[][] visit;
 	private static ArrayList<Person> personList = new ArrayList<>(); //아직 baseCamp가길 기다리는 사람
 	private static ArrayList<Person> onTheMap = new ArrayList<>(); //지도상에 있는 사람들을 관리.
+	private static ArrayList<Person> onTheMap2 = new ArrayList<>(); 
 	private static ArrayList<BaseNode> candidate = new ArrayList<>(); //출발한 basecamp 후보지
 	private static ArrayList<BaseNode> baseList = new ArrayList<>();
 
@@ -123,10 +124,7 @@ public class Main {
 		for(int i=0; i<M; i++) {
 			personList.add(new Person(sc.nextInt()-1, sc.nextInt()-1));
 		}
-		
-		System.out.println(personList);
-//		System.out.println(baseList);
-		
+	
 		solution();
 		
 	}
@@ -134,19 +132,10 @@ public class Main {
 	
 	public static void solution() {
 		
-		//목표 편의점 -> 베이스캠프 setting해줘야함 (이건 미리 setting하면 안됨) - 할때마다 달라짐.
-		
-		//if(대기중인 사람이 있다면)
-//		if(personList.size() !=0) {
-//			//3번 t<=m base로 이동 (남은 사람이 있으면)
-//			Person person = personList.remove(0);
-//			startBase(person);
-//			
-//			//print(board);
-//		}
+		while(true) {
+			
+			answer+=1;
 
-		for(int turn=0; turn<2; turn++) {
-			System.out.println(turn + " 번째 턴입니다!");
 			//if(map위에 사람이 있다면)
 			if(onTheMap.size() !=0) {
 				
@@ -157,7 +146,13 @@ public class Main {
 					//1번 본인이 가고싶은 방향으로 1칸 움직임
 					move(person);
 					
+				}
+				
+				copyOnMap(onTheMap, onTheMap2);
+				for(int i=0; i<onTheMap2.size(); i++) {
 					//2번 해당편의점에 도달 그 칸은 막힘
+					Person person = onTheMap2.get(i); //두개를 한번에 못걸러냄 위에서 처럼 제거하면서 사이즈가 달라지는 현
+					//걸러내기 전 전체 맵: [Person [targetX=0, targetY=2, baseX=0, baseY=0, curX=0, curY=2], Person [targetX=0, targetY=1, baseX=1, baseY=1, curX=0, curY=1]] 두개를 한꺼번에 걸러야
 					finish(person);
 				}
 				
@@ -169,16 +164,19 @@ public class Main {
 			
 				//3번 t<=m base로 이동 (남은 사람이 있으면)
 				Person person = personList.remove(0);
-				System.out.println(personList);
 				startBase(person);
-				
-				//print(board);
+
+			//시뮬레이션 종료 시점
+			if(onTheMap.size() ==0 && personList.size()==0) {
+				break;
 			}
+
 		}
 		
-		print(board);
-		
+		System.out.println(answer);
+
 	}
+	
 	
 	public static void startBase(Person person) {
 		//모든 base에서 탐험해야함.
@@ -193,8 +191,6 @@ public class Main {
 		}
 		
 		Collections.sort(candidate, Comparator.comparing(BaseNode::getDept).thenComparing(BaseNode::getBaseX).thenComparing(BaseNode::getBaseY));
-		
-		System.out.println(candidate);
 		
 		//baseCamp가 선택됨.
 		BaseNode startBase = candidate.get(0);
@@ -218,10 +214,8 @@ public class Main {
 		
 		//현재 목적이 정해진 사람을 list에 넣어준다.
 		onTheMap.add(person);
-	
-//		System.out.println(baseList);
-		
 	}
+	
 	
 	public static void bfs(Person person, BaseNode base) {
 		
@@ -260,21 +254,24 @@ public class Main {
 		}	
 	}
 	
-	
 	public static void move(Person person) {
 		
+		visit = new boolean[N][N]; //visit을 초기화 안해서 또 틀렸음.
 		BaseNode targetBaseNode = exploreBfs(person);
+		targetBaseNode.traceList.get(0);
 
-		//person을 한 칸 움직인다.
-		person.curX = targetBaseNode.traceList.get(0).x;
-		person.curY = targetBaseNode.traceList.get(0).y;
+		if(targetBaseNode.traceList.size() != 0) {
+			person.curX = targetBaseNode.traceList.get(0).x;
+			person.curY = targetBaseNode.traceList.get(0).y;
+		}
 
 	}
+	
 	
 	public static BaseNode exploreBfs(Person person) {
 		
 		Queue<BaseNode> q = new LinkedList<>();
-		q.add(new BaseNode(person.baseX, person.baseY, 0));
+		q.add(new BaseNode(person.curX, person.curY, 0));
 		
 		while(!q.isEmpty()) {
 			
@@ -312,9 +309,9 @@ public class Main {
 		
 	}
 	
-	
 	public static void finish(Person person) {
 		
+		//완료된 사람들 걸러내기
 		//목적지에 도착한다면 map에서 빼주자.
 		if(person.curX == person.targetX && person.curY == person.targetY) {
 			person.fin = true;
@@ -322,6 +319,13 @@ public class Main {
 			board[person.targetX][person.targetY] = -1;
 			onTheMap.remove(person);
 		}	
+	}
+	
+	public static void copyOnMap(ArrayList<Person> source, ArrayList<Person> target) {
+		//자료구조에서 넣고 빼기만할거라 굳이 딥카피 할 필요가 없다.
+		for(int i=0; i<source.size(); i++) {
+			target.add(source.get(i));
+		}
 	}
 	
 }
