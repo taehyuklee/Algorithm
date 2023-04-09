@@ -160,10 +160,10 @@ public class Main
 
                         if(oldStTime<10){
                             //10미만일때 0을 붙여줘야 한다.
-                            String target = "0"+oldStTime+"-"+availTime.endTime;
+                            String target = "0"+oldStTime+"-"+oldEndTime;
                             availTimeSt.add(target);
                         }else{
-                            String target = oldStTime+"-"+availTime.endTime;
+                            String target = oldStTime+"-"+oldEndTime;
                             availTimeSt.add(target);
                         }
                         oldStTime = availList.get(t).stTime;
@@ -179,11 +179,14 @@ public class Main
                 }
 
                 System.out.println(availCnt +" " + "available:");
-                
+
                 for(int f=0; f<availTimeSt.size(); f++){
                     System.out.println(availTimeSt.get(f));
                 }
 
+                if(i != resultRoom.size()-1){
+                    System.out.println("-----");
+                }
 
             }
 
