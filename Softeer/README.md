@@ -13,5 +13,5 @@ Softeer Platform (Hyundai)
 <b>4. 8단 변속기</b> - EightLevelTransmission 문제 (https://softeer.ai/practice/info.do?idx=1&eid=408&sw_prbl_sbms_sn=173144) <br>
 &nbsp; &nbsp; <b>특징:</b> 그냥 순차적으로 구현되는지 보는 문제 (count를 이용해 중간에 올림, 내림을 판단).<br><br>
 
-<b>4. 비밀메뉴</b> - SecretMenu 문제 (https://softeer.ai/practice/info.do?idx=1&eid=623&sw_prbl_sbms_sn=173194) <br>
+<b>5. 비밀메뉴</b> - SecretMenu 문제 (https://softeer.ai/practice/info.do?idx=1&eid=623&sw_prbl_sbms_sn=173194) <br>
 &nbsp; &nbsp; <b>특징:</b> 두 가지 버전으로 풀수 있다. 일반적인 수열(Ver1), String contains로 엄청 간편하게 1분안에 풀수 있다 (Ver2)
