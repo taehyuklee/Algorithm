@@ -1,27 +1,6 @@
 import java.util.*;
 import java.io.*;
-/*
- * 
-5 12
-c
-a
-b
-d
-e
-a 9 13
-a 14 18
-b 9 18
-c 9 10
-d 9 17
-d 9 13
-c 13 15
-e 9 10
-e 11 12
-e 13 14
-e 15 16
-e 17 18
- * 
- */
+
 class Time{
     int stTime;
     int endTime;
@@ -112,10 +91,7 @@ public class Main
 
         //오름차순으로 정렬 roomName으로
         Collections.sort(resultRoom, Comparator.comparing(Room::getRoomName)); 
-        
-//        System.out.println(resultRoom.get(0).timeList);
-//        System.out.println(resultRoom.get(1).timeList);
-//        System.out.println(resultRoom.get(4).timeList);
+
 
         for(int i=0; i<resultRoom.size(); i++){
             Room room = resultRoom.get(i);
@@ -124,123 +100,83 @@ public class Main
 
             //timeList보고 출력하기
             ArrayList<Time> timeList = room.timeList;
-            ArrayList<Time> availList = new ArrayList<>();
             ArrayList<String> availTimeSt = new ArrayList<>();
 
-            int notAvailCnt = 0;
-            //예약 가능한 시간이 있는지 확인하기.
-            for(int j=0; j<timeList.size(); j++){
-                
-                Time eachTime = timeList.get(j);
-
-                if(eachTime.available == false){
-                    notAvailCnt +=1;
-                }else{
-                    availList.add(eachTime);
-                }
-
-            }
+            //가능한 시간대가 있는지 확인.
+            ArrayList<Time> availList = checkNoAvail(timeList);
 
             //시간대 출력하기
-            if(notAvailCnt == timeList.size()){
+            if(availList.size() == 0){
+                //availTime시간대가 없을때
                 System.out.println("Not available");
                 if(i != resultRoom.size()-1){
                     System.out.println("-----");
                 }
+
             }else{
-                //availTime시간대에 대해서 출력하기 
+                //availTime시간대가 있을때
                 int availCnt = 0;
 
-                int oldStTime, stTime;
-                int oldEndTime, endTime;
-
-                oldStTime = availList.get(0).stTime;
-                oldEndTime = availList.get(0).endTime;
+                int oldStTime = availList.get(0).stTime;
+                int oldEndTime = availList.get(0).endTime;
           
-                
                	if(availList.size() == 1) {
+                    //하나만 있을때
             		availCnt +=1;
-                    if(oldStTime<10){
-                        //10미만일때 0을 붙여줘야 한다.
-                        String target = "0"+oldStTime+"-"+oldEndTime;
-                        availTimeSt.add(target);
-                    }else{
-                        String target = oldStTime+"-"+oldEndTime;
-                        availTimeSt.add(target);
-                    }
+
+                    //가능한 시간대에 대해서 적어주고 
+                    writeAndSave(oldStTime, oldEndTime, availTimeSt);
+
+                    //출력한다.
+                    printResult(availCnt, availTimeSt, resultRoom, i);
                     
-	                System.out.println(availCnt +" " + "available:");
-	            	
-	                for(int f=0; f<availTimeSt.size(); f++){
-	                    System.out.println(availTimeSt.get(f));
-	                }
-	
-	                if(i != resultRoom.size()-1){
-	                    System.out.println("-----");
-	                }
                     
             	}else {
-
-	                for(int t=1; t<availList.size(); t++){
-	                	
+                    //available time 여러개 존재할때 (차례대로 시간을 확인한다. 이어붙여졌는지)
+	                for(int t=1; t<availList.size(); t++){	
 	                	
 	                    Time availTime = availList.get(t);
-	                    //System.out.println("oldEndTime: " + oldEndTime + " availTime.stTime: " + availTime.stTime);
-	
-	                    if(oldEndTime == availTime.stTime){
+            
+	                    if(oldEndTime == availTime.stTime){ //시간이 연속일때
+
+                            //마지막일때
 	                        if(t == availList.size()-1){
 	                            availCnt+=1;
-	
-	                            if(oldStTime<10){
-	                                //10미만일때 0을 붙여줘야 한다.
-	                                String target = "0"+oldStTime+"-"+availTime.endTime;
-	                                availTimeSt.add(target);
-	                            }else{
-	                                String target = oldStTime+"-"+availTime.endTime;
-	                                availTimeSt.add(target);
-	                            }
-	
+
+                                //가능한 시간대에 대해서 적어주고 
+                                writeAndSave(oldStTime, availTime.endTime, availTimeSt);
+
 	                            oldStTime = availList.get(t).stTime;
 	                            oldEndTime = availList.get(t).endTime;
 	                                
 	                            continue;
 	                        }
+                            //stTime은 안해줘도 된다. (이어 붙여지니까)
+                            oldEndTime = availTime.endTime;
 	                    }
-	                    else{
-	                    	
+	                    else{//시간이 연속이 아닐때
 	                        availCnt+=1;
-	
-	                        if(oldStTime<10){
-	                            //10미만일때 0을 붙여줘야 한다.
-	                            String target = "0"+oldStTime+"-"+oldEndTime;
-	                            availTimeSt.add(target);
-	                        }else{
-	                            String target = oldStTime+"-"+oldEndTime;
-	                            availTimeSt.add(target);
-	                        }
+                            
+                            //가능한 시간대에 대해서 적어주고 
+                            writeAndSave(oldStTime, oldEndTime, availTimeSt);
+
 	                        oldStTime = availList.get(t).stTime;
 	                        oldEndTime = availList.get(t).endTime;
+
+                            //마지막일때 조건은 처리해줘야 한다. (여기가 마지막으로 다음 사이클이 없으니까 여기서 update쳐줘야함)
+                            if(t == availList.size()-1){
+                                availCnt+=1; //마지막 처리할때 1더해줘야 한다.
+                                writeAndSave(oldStTime, oldEndTime, availTimeSt);
+                            }
 	                        continue;
-	                        
-	
+
 	                    }
-	                    
-	                    oldEndTime = availTime.endTime;
-	
+
 	                    //마지막에 전환되는게 없으니까 마무리될때 +1해서 마무리 wrapping해준다
 	
 	                }
-	                
-	
-	                System.out.println(availCnt +" " + "available:");
-	
-	                for(int f=0; f<availTimeSt.size(); f++){
-	                    System.out.println(availTimeSt.get(f));
-	                }
-	
-	                if(i != resultRoom.size()-1){
-	                    System.out.println("-----");
-	                }
+
+                    printResult(availCnt, availTimeSt, resultRoom, i);
 	
 	            }
             }
@@ -248,6 +184,50 @@ public class Main
 
         }
 
+    }
+
+    public static void printResult(int availCnt, ArrayList<String> availTimeSt, ArrayList<Room> resultRoom, int i){
+        System.out.println(availCnt + " " + "available:");
+        
+        for(int f=0; f<availTimeSt.size(); f++){
+            System.out.println(availTimeSt.get(f));
+        }
+
+        if(i != resultRoom.size()-1){
+            System.out.println("-----");
+        }
+    }
+
+    public static void writeAndSave(int oldStTime, int oldEndTime, ArrayList<String> availTimeSt){
+        if(oldStTime<10){
+            //10미만일때 0을 붙여줘야 한다.
+            String target = "0"+oldStTime+"-"+oldEndTime;
+            availTimeSt.add(target);
+        }else{
+            String target = oldStTime+"-"+oldEndTime;
+            availTimeSt.add(target);
+        }
+    }
+
+    public static ArrayList<Time> checkNoAvail(ArrayList<Time> timeList){
+
+        ArrayList<Time> availList = new ArrayList<>();
+
+        int notAvailCnt = 0;
+        //예약 가능한 시간이 있는지 확인하기.
+        for(int j=0; j<timeList.size(); j++){
+            
+            Time eachTime = timeList.get(j);
+
+            if(eachTime.available == false){
+                notAvailCnt +=1;
+            }else{
+                availList.add(eachTime);
+            }
+
+        }
+
+        return availList;
     }
     
     public static void writingSchedule() {
