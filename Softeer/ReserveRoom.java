@@ -229,10 +229,6 @@ public class Main
 
         return availList;
     }
-    
-    public static void writingSchedule() {
-    	
-    }
 
     public static void findTime(Room targetRoom, int stTime, int endTime){
 
@@ -266,5 +262,4 @@ public class Main
 
         }
     }
-
 }
