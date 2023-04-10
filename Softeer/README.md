@@ -18,4 +18,7 @@ Softeer Platform (Hyundai)
 
 <b>6. 회의실예약</b> - ReserveRoom 문제 (https://softeer.ai/practice/info.do?idx=1&eid=626&sw_prbl_sbms_sn=173494) <br>
 &nbsp; &nbsp; <b>특징:</b> 나한테 나름 빡구현이었다. 다른 사람 풀이 참조해서 배워보자 <br>
-&nbsp; &nbsp; &nbsp; 내가 만든 test case - https://jealous-watch-86a.notion.site/ReserveRoom-ece2d37ec26e4accb403a74e8a208f10
+&nbsp; &nbsp; &nbsp; 내가 만든 test case - https://jealous-watch-86a.notion.site/ReserveRoom-ece2d37ec26e4accb403a74e8a208f10.<br><br>
+
+<b>7. 전광판</b> - Banner 문제 (https://softeer.ai/practice/info.do?idx=1&eid=624&sw_prbl_sbms_sn=173510) <br>
+&nbsp; &nbsp; <b>특징:</b> char를 잘 사용할수 있도록 하는 문제, ArrayList<Integer>(Arrays.asList());에 대해서도 잘 사용해보자. <br>
