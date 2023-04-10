@@ -1,6 +1,27 @@
 import java.util.*;
 import java.io.*;
-
+/*
+ * 
+5 12
+c
+a
+b
+d
+e
+a 9 13
+a 14 18
+b 9 18
+c 9 10
+d 9 17
+d 9 13
+c 13 15
+e 9 10
+e 11 12
+e 13 14
+e 15 16
+e 17 18
+ * 
+ */
 class Time{
     int stTime;
     int endTime;
@@ -91,6 +112,10 @@ public class Main
 
         //오름차순으로 정렬 roomName으로
         Collections.sort(resultRoom, Comparator.comparing(Room::getRoomName)); 
+        
+//        System.out.println(resultRoom.get(0).timeList);
+//        System.out.println(resultRoom.get(1).timeList);
+//        System.out.println(resultRoom.get(4).timeList);
 
         for(int i=0; i<resultRoom.size(); i++){
             Room room = resultRoom.get(i);
@@ -119,7 +144,9 @@ public class Main
             //시간대 출력하기
             if(notAvailCnt == timeList.size()){
                 System.out.println("Not available");
-                System.out.println("-----");
+                if(i != resultRoom.size()-1){
+                    System.out.println("-----");
+                }
             }else{
                 //availTime시간대에 대해서 출력하기 
                 int availCnt = 0;
@@ -129,70 +156,102 @@ public class Main
 
                 oldStTime = availList.get(0).stTime;
                 oldEndTime = availList.get(0).endTime;
-
-                for(int t=1; t<availList.size(); t++){
-                    Time availTime = availList.get(t);
-                    //System.out.println("oldEndTime: " + oldEndTime + " availTime.stTime: " + availTime.stTime);
-
-                    if(oldEndTime == availTime.stTime){
-                        if(t == availList.size()-1){
-                            availCnt+=1;
-
-                            if(oldStTime<10){
-                                //10미만일때 0을 붙여줘야 한다.
-                                String target = "0"+oldStTime+"-"+availTime.endTime;
-                                availTimeSt.add(target);
-                            }else{
-                                String target = oldStTime+"-"+availTime.endTime;
-                                availTimeSt.add(target);
-                            }
-
-                            //if(t+1<availList.size()){
-                            oldStTime = availList.get(t).stTime;
-                            oldEndTime = availList.get(t).endTime;
-                                
-                            //}
-                            continue;
-                        }
-                    }
-                    else{
-                        availCnt+=1;
-
-                        if(oldStTime<10){
-                            //10미만일때 0을 붙여줘야 한다.
-                            String target = "0"+oldStTime+"-"+oldEndTime;
-                            availTimeSt.add(target);
-                        }else{
-                            String target = oldStTime+"-"+oldEndTime;
-                            availTimeSt.add(target);
-                        }
-                        oldStTime = availList.get(t).stTime;
-                        oldEndTime = availList.get(t).endTime;
-                        continue;
-
+          
+                
+               	if(availList.size() == 1) {
+            		availCnt +=1;
+                    if(oldStTime<10){
+                        //10미만일때 0을 붙여줘야 한다.
+                        String target = "0"+oldStTime+"-"+oldEndTime;
+                        availTimeSt.add(target);
+                    }else{
+                        String target = oldStTime+"-"+oldEndTime;
+                        availTimeSt.add(target);
                     }
                     
-                    oldEndTime = availTime.endTime;
+	                System.out.println(availCnt +" " + "available:");
+	            	
+	                for(int f=0; f<availTimeSt.size(); f++){
+	                    System.out.println(availTimeSt.get(f));
+	                }
+	
+	                if(i != resultRoom.size()-1){
+	                    System.out.println("-----");
+	                }
+                    
+            	}else {
 
-                    //마지막에 전환되는게 없으니까 마무리될때 +1해서 마무리 wrapping해준다
-
-                }
-
-                System.out.println(availCnt +" " + "available:");
-
-                for(int f=0; f<availTimeSt.size(); f++){
-                    System.out.println(availTimeSt.get(f));
-                }
-
-                if(i != resultRoom.size()-1){
-                    System.out.println("-----");
-                }
-
+	                for(int t=1; t<availList.size(); t++){
+	                	
+	                	
+	                    Time availTime = availList.get(t);
+	                    //System.out.println("oldEndTime: " + oldEndTime + " availTime.stTime: " + availTime.stTime);
+	
+	                    if(oldEndTime == availTime.stTime){
+	                        if(t == availList.size()-1){
+	                            availCnt+=1;
+	
+	                            if(oldStTime<10){
+	                                //10미만일때 0을 붙여줘야 한다.
+	                                String target = "0"+oldStTime+"-"+availTime.endTime;
+	                                availTimeSt.add(target);
+	                            }else{
+	                                String target = oldStTime+"-"+availTime.endTime;
+	                                availTimeSt.add(target);
+	                            }
+	
+	                            oldStTime = availList.get(t).stTime;
+	                            oldEndTime = availList.get(t).endTime;
+	                                
+	                            continue;
+	                        }
+	                    }
+	                    else{
+	                    	
+	                        availCnt+=1;
+	
+	                        if(oldStTime<10){
+	                            //10미만일때 0을 붙여줘야 한다.
+	                            String target = "0"+oldStTime+"-"+oldEndTime;
+	                            availTimeSt.add(target);
+	                        }else{
+	                            String target = oldStTime+"-"+oldEndTime;
+	                            availTimeSt.add(target);
+	                        }
+	                        oldStTime = availList.get(t).stTime;
+	                        oldEndTime = availList.get(t).endTime;
+	                        continue;
+	                        
+	
+	                    }
+	                    
+	                    oldEndTime = availTime.endTime;
+	
+	                    //마지막에 전환되는게 없으니까 마무리될때 +1해서 마무리 wrapping해준다
+	
+	                }
+	                
+	
+	                System.out.println(availCnt +" " + "available:");
+	
+	                for(int f=0; f<availTimeSt.size(); f++){
+	                    System.out.println(availTimeSt.get(f));
+	                }
+	
+	                if(i != resultRoom.size()-1){
+	                    System.out.println("-----");
+	                }
+	
+	            }
             }
 
 
         }
 
+    }
+    
+    public static void writingSchedule() {
+    	
     }
 
     public static void findTime(Room targetRoom, int stTime, int endTime){
