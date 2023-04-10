@@ -14,4 +14,8 @@ Softeer Platform (Hyundai)
 &nbsp; &nbsp; <b>특징:</b> 그냥 순차적으로 구현되는지 보는 문제 (count를 이용해 중간에 올림, 내림을 판단).<br><br>
 
 <b>5. 비밀메뉴</b> - SecretMenu 문제 (https://softeer.ai/practice/info.do?idx=1&eid=623&sw_prbl_sbms_sn=173194) <br>
-&nbsp; &nbsp; <b>특징:</b> 두 가지 버전으로 풀수 있다. 일반적인 수열(Ver1), String contains로 엄청 간편하게 1분안에 풀수 있다 (Ver2)
+&nbsp; &nbsp; <b>특징:</b> 두 가지 버전으로 풀수 있다. 일반적인 수열(Ver1), String contains로 엄청 간편하게 1분안에 풀수 있다 (Ver2)<br><br>
+
+<b>5. 회의실예약</b> - ReserveRoom 문제 (https://softeer.ai/practice/info.do?idx=1&eid=626&sw_prbl_sbms_sn=173494) <br>
+&nbsp; &nbsp; <b>특징:</b> 나한테 나름 빡구현이었다. 다른 사람 풀이 참조해서 배워보자 <br>
+&nbsp; &nbsp; &nbsp; 내가 만든 test case - https://jealous-watch-86a.notion.site/ReserveRoom-ece2d37ec26e4accb403a74e8a208f10
