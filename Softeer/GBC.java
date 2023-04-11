@@ -73,6 +73,7 @@ public class Main
             Collections.sort(answerList);
             System.out.println(answerList.get(answerList.size()-1));
         }else{
+            //이 부분 문제에서 읽었었는데 까먹고 있었다. 확실히 읽어야 할 부분.
             System.out.println(0);
         }
     }
