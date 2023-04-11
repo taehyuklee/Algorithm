@@ -23,5 +23,8 @@ Softeer Platform (Hyundai)
 <b>7. 전광판</b> - Banner 문제 (https://softeer.ai/practice/info.do?idx=1&eid=624&sw_prbl_sbms_sn=173510) <br>
 &nbsp; &nbsp; <b>특징:</b> char를 잘 사용할수 있도록 하는 문제, ArrayList<Integer>(Arrays.asList());에 대해서도 잘 사용해보자. <br><br>
 
-<b>7. 바이러스</b> - Virus 문제 (https://softeer.ai/practice/info.do?idx=1&eid=407) <br>
+<b>8. 바이러스</b> - Virus 문제 (https://softeer.ai/practice/info.do?idx=1&eid=407) <br>
 &nbsp; &nbsp; <b>특징:</b> long형 (19자리) 과, double형 (정수만 표현했을때 15자리 정도)에 대한 정수자리수 표현 길이를 정확히 알아야 한다. <br><br>
+
+<b>9. GBC건물</b> - GBC 문제 (https://softeer.ai/practice/info.do?idx=1&eid=584) <br>
+&nbsp; &nbsp; <b>특징:</b> 문제 잘 읽고 풀어야 하고 예외 케이스들 좀 잘 생각해봐야 한다. (다른 사람 풀이 참고해볼것) <br><br>
