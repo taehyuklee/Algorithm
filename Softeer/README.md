@@ -21,4 +21,7 @@ Softeer Platform (Hyundai)
 &nbsp; &nbsp; &nbsp; 내가 만든 test case - https://jealous-watch-86a.notion.site/ReserveRoom-ece2d37ec26e4accb403a74e8a208f10.<br><br>
 
 <b>7. 전광판</b> - Banner 문제 (https://softeer.ai/practice/info.do?idx=1&eid=624&sw_prbl_sbms_sn=173510) <br>
-&nbsp; &nbsp; <b>특징:</b> char를 잘 사용할수 있도록 하는 문제, ArrayList<Integer>(Arrays.asList());에 대해서도 잘 사용해보자. <br>
+&nbsp; &nbsp; <b>특징:</b> char를 잘 사용할수 있도록 하는 문제, ArrayList<Integer>(Arrays.asList());에 대해서도 잘 사용해보자. <br><br>
+
+<b>7. 바이러스</b> - Virus 문제 (https://softeer.ai/practice/info.do?idx=1&eid=407) <br>
+&nbsp; &nbsp; <b>특징:</b> long형 (19자리) 과, double형 (정수만 표현했을때 15자리 정도)에 대한 정수자리수 표현 길이를 정확히 알아야 한다. <br><br>
