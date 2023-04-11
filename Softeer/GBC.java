@@ -34,9 +34,6 @@ public class Main
             int[] realInt = new int[] {sc.nextInt(), sc.nextInt()};
             realList.add(realInt);
         }
-        
-        // print(referList);
-        // print(realList);
 
         solution();
 
@@ -48,7 +45,7 @@ public class Main
         curRef = 0;
         referArray = referList.get(curRef);
 
-        for(int i=0; i<3; i++){
+        for(int i=0; i<M; i++){
 
             int[] realArray = realList.get(i);
 
@@ -65,18 +62,19 @@ public class Main
                     outRange(realArray);
                 }
 
-                if(realArray[0] ==0 ){
+                if(realArray[0] ==0){
                     loop =false;
                 }
             }
 
         }
 
-        // print(referList);
-        // print(realList);
-        // System.out.println(answerList);
-        Collections.sort(answerList);
-        System.out.println(answerList.get(answerList.size()-1));
+        if(answerList.size() != 0){
+            Collections.sort(answerList);
+            System.out.println(answerList.get(answerList.size()-1));
+        }else{
+            System.out.println(0);
+        }
     }
 
     public static void inRange(int[] realArray){
@@ -103,7 +101,6 @@ public class Main
     public static void outRange(int[] realArray){
 
         //제한 속도를 넘을때 answerList에 넣어준다.
-        // System.out.println(realArray[1] - referArray[1]);
         if(realArray[1] - referArray[1] >0){
             answerList.add(realArray[1] - referArray[1]);
         }
@@ -115,14 +112,11 @@ public class Main
         referArray[0] = 0; 
 
         //여긴 바로 다음 refer로 update해준다.
-        // System.out.println("하이" + curRef);
         curRef++;
-        // System.out.println("하이" + curRef);
         nextReference(curRef);
     }
 
     public static void nextReference(int curRef){
-        //System.out.println("하이" + curRef);
         referArray = referList.get(curRef);
     }
 }
