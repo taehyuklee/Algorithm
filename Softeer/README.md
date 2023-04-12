@@ -31,4 +31,4 @@ Softeer Platform (Hyundai)
 
 <b>10. 성적평균</b> - AverageScore 문제 (https://softeer.ai/practice/info.do?idx=1&eid=389) <br>
 &nbsp; &nbsp; <b>특징:</b> 1. 얼핏 보면, map으로 풀수도 있는데, put하는데 map이 Array보다 2배정도 시간이 걸린다 10^6기준. <br>
-&nbsp; &nbsp; &nbsp; &nbsp; 2. 또한 array는 index로 접근해서 조회하면 O(1)로 똑같기때문에 array로 쓰는게 timeOut에 안걸림. map은 걸림.
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  2. 또한 array는 index로 접근해서 조회하면 O(1)로 똑같기때문에 array로 쓰는게 timeOut에 안걸림. map은 걸림.
