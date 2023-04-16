@@ -17,24 +17,32 @@ public class Main
         System.out.println();
     }
 
+
     public static String makeKey(String inputKey){
         String alpah = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
         String key = "";
+        boolean skip = false;
 
         for(int i=0; i<inputKey.length(); i++){
             if(!key.contains(String.valueOf(inputKey.charAt(i)))){
                 key += String.valueOf(inputKey.charAt(i));
             }
-        }
-
-
-        for(int i=0; i<alpah.length(); i++){
-            if(!inputKey.contains(String.valueOf(alpah.charAt(i)))){
-                key += String.valueOf(alpah.charAt(i));
-            }
 
             if(key.length() == 25){
+                skip = true;
                 break;
+            }
+        }
+
+        if(!skip){
+            for(int i=0; i<alpah.length(); i++){
+                if(!key.contains(String.valueOf(alpah.charAt(i)))){
+                    key += String.valueOf(alpah.charAt(i));
+                }
+
+                if(key.length() == 25){
+                    break;
+                }
             }
         }
 
@@ -58,9 +66,9 @@ public class Main
             }
         }
 
-        print(encKey);
+        //print(encKey);
 
-        System.out.println(input);
+        //System.out.println(input);
 
         solution();
         
@@ -68,15 +76,16 @@ public class Main
     }
 
     public static void solution(){
-        
 
         //input X, Q등으로 2분할 프로세싱
         String processed = processData();
-        System.out.println(processed);
+        //System.out.println(processed);
 
         //암호화 작업
-        encodeProcess(processed);
-        //System.out.println(output);
+        encodeProcess(processed);        
+
+        //Answer
+        System.out.println(output);
 
     }
 
@@ -84,127 +93,95 @@ public class Main
 
         //두개씩 세트로 다시 나눠야 한다. 
         List<List<Character>> collecions = getPair(processed);
-        System.out.println(collecions);
+        //System.out.println(collecions);
 
         //같은 행에 존재
         for(int i=0; i<collecions.size(); i++){
 
             List<Character> pairs = collecions.get(i);
-
-            boolean rowTrue = false;
-            boolean colTrue = false;
             
-            //행에 관련된 이야기
-            boolean breakPoint = false;
-            for(int j=0; j<encKey.length; j++){ //행
-                String cand = "";
-                for(int l=0; l<2; l++){ //글자 순서가 있다.
-                    for(int k=0; k<encKey[0].length; k++){ //열
-                        if(encKey[j][k] == pairs.get(l)){
-                            cand += String.valueOf(encKey[j][(k+1)%5]);
-                        }
+            int firstCol=0, firstRow=0;
+            int secondCol=0, secondRow=0;
+            for(int j=0; j<encKey.length; j++){
+                for(int k=0; k<encKey.length; k++){
+                    if(pairs.get(0) == encKey[j][k]){
+                        firstCol = k;
+                        firstRow = j;
                     }
-                    if(cand.length() == 2){
-                        output += cand;
-                        breakPoint = true;
-                        break;
-                    }
-                }
-                if(breakPoint){
-                    rowTrue = true;
-                    break;
-                }
-            }
-            //열에 관련된 이야기 - 같은 행이 아닌데, 같은 열에 존재
-            if(rowTrue == false){
-                breakPoint = false;
-                for(int k=0; k<encKey[0].length; k++){ //열
-                    String cand = "";
-                    for(int l=0; l<2; l++){
-                        for(int j=0; j<encKey.length; j++){ //행
-                            if(encKey[j][k] == pairs.get(l)){                                
-                                cand += String.valueOf(encKey[(j+1)%5][k]);
-                            }
-                        }
-                        //System.out.println("k: "  + k + " j: " + j + " " + cand);
-                        if(cand.length() == 2){
-                            output += cand;
-                            breakPoint = true;
-                            break; //이거때문에 고생함
-                        }
-                    }
-                    if(breakPoint){
-                        colTrue = true;
-                        break;
+
+                    if(pairs.get(1) == encKey[j][k]){
+                        secondCol = k;
+                        secondRow = j;
                     }
                 }
             }
 
-            //모두가 아닐때
-            int firstRow = 0 , firstCol =0;
-            int secondRow = 0, secondCol =0;
-            if(colTrue ==false && rowTrue == false){
-                for(int j=0; j<encKey.length; j++){
-                    for(int k=0; k<encKey.length; k++){
-                        if(pairs.get(0) == encKey[j][k]){
-                            firstCol = k;
-                            firstRow = j;
-                        }
+            if(firstRow == secondRow){
+                output += String.valueOf(encKey[firstRow][(firstCol+1)%5]);
+                output += String.valueOf(encKey[secondRow][(secondCol+1)%5]);
+            }else if(firstCol == secondCol){
+                output += String.valueOf(encKey[(firstRow+1)%5][firstCol]);
+                output += String.valueOf(encKey[(secondRow+1)%5][secondCol]);
 
-                        if(pairs.get(1) == encKey[j][k]){
-                            secondCol = k;
-                            secondRow = j;
-                        }
-                    }
-                }
+            }else{
                 output += String.valueOf(encKey[firstRow][secondCol]);
                 output += String.valueOf(encKey[secondRow][firstCol]);
             }
- 
+
 
         }
-        System.out.println(output);    
+        // System.out.println(output);    
 
     }
 
     public static String processData(){
 
         String processed = "";
-        
+
         char oldChar = input.charAt(0);
-        processed += String.valueOf(oldChar);
+        //processed += String.valueOf(oldChar);
         for(int i=1; i<input.length(); i++){
         
             String newInput = String.valueOf(input.charAt(i));
 
             if(input.charAt(i) == oldChar){
                 if(input.charAt(i) == 'X'){
-                    processed += String.valueOf(oldChar) + "Q" + newInput;
+                    processed += oldChar + "Q";
                     oldChar = input.charAt(i);
-                    continue;
+
                 }else{
-                    processed += String.valueOf(oldChar) + "X" + newInput;
+                    processed += oldChar + "X";
                     oldChar = input.charAt(i);
-                    continue;
+   
+                }
+
+                //이거 처리 안해주면 YY, XX등과 같은 마지막에 같을때 마지막 글자가 안들어가짐
+                if(i == input.length()-1){
+                    processed += newInput + "X";
                 }
 
             }else{
-                processed += newInput;
-            }
+                processed += oldChar + newInput;
+                //System.out.println(oldChar +" " + newInput);
+                i+=1;
 
-            if(i+1<=input.length()-1){
-                oldChar = input.charAt(i+1);
+                if(i<input.length()-1){
+                    oldChar = input.charAt(i);
+                }else if(i == input.length()-1){ 
+                    oldChar = input.charAt(i);
+                    processed += String.valueOf(oldChar) + "X";
+                }
+
+                //System.out.println(oldChar);
             }
           
         }
-            
-        // System.out.println(processed);
 
-        //마무리 문자 처리
-        if(processed.length()%2 !=0){
-            processed += "X";
+        if(input.length()==1){
+            processed += oldChar + "X";
         }
 
+        //System.out.println("1: " + processed);
         return processed;
     }
 
