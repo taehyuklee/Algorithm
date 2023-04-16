@@ -34,4 +34,7 @@ Softeer Platform (Hyundai)
 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 2. 또한 array는 index로 접근해서 조회하면 O(1)로 똑같기때문에 array로 쓰는게 timeOut에 안걸림. map은 걸림. <br><br>
 
 <b>10. 성적평가</b> - EvaluateScore 문제 (https://softeer.ai/practice/info.do?idx=1&eid=1309) <br>
-&nbsp; &nbsp; <b>특징:</b> 1. array에 index를 잘 사용해서 Complexity를 줄일수 있다. PriorityQueue를 이용하거나, Collecions Sort를 하고 index를 맞춰야 함. <br>
+&nbsp; &nbsp; <b>특징:</b> 1. array에 index를 잘 사용해서 Complexity를 줄일수 있다. PriorityQueue를 이용하거나, Collecions Sort를 하고 index를 맞춰야 함. <br><br>
+
+<b>10. 암호화페어</b> - Encoding 문제 (https://softeer.ai/practice/info.do?idx=1&eid=804) <br>
+&nbsp; &nbsp; <b>특징:</b> 1. 암호길이가 1일때 예외를 못잡아서 고생했다, 데이터 프로세싱 마지막 처리도 (edge조건들) - 깔끔하게 Queue같은걸로 접근하자 <br><br>
