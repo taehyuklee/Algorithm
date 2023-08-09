@@ -67,8 +67,8 @@ public class Main {
 
 				//맨 좌측 상단에 있는걸 W로 시작 또는 B로 둘 다 따져봐야 
 				for(int turn=0; turn<2; turn++) {
-					
-					if(board[0][0].equals("W")) {
+					String[][] newBoard = deepCopyBoard(i, j);
+					if(newBoard[0][0].equals("W")) {
 						getAnswerList(i,j,"B");
 
 					}else {
