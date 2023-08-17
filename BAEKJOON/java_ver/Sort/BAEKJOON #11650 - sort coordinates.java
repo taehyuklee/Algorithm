@@ -1,4 +1,8 @@
+package Sort;
 import java.util.*;
+
+import Coord;
+
 import java.io.*;
 
 class Coord{

@@ -1,5 +1,8 @@
+package SearchAlgorithm;
 import java.io.*;
 import java.util.*;
+
+import Node;
 
 class Node{
 	int x;
@@ -44,37 +47,40 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-
-		makeBoard();
-		
-		print2D(board);
-		
-		for(int i=0; i<M; i++) {
-			for(int j=0; j<N; j++) {
-				
-				int checkNum= board[i][j];
-				if(i==4 && j==5) {System.out.println();
-				if(checkNum ==1 && visit[i][j] ==false) {
-					
-					bfs(i, j);
-					answer++;
-					break;
-				}
-			}
-		}
-		
-		print2D(visit);
-		
-		
-	}
-	
-	static void makeBoard() {
 		
 		//Input해서 자료구조로 넣어주는 부분.
 		Scanner sc = new Scanner(System.in);
 		
 		T = Integer.parseInt(sc.next());
+
+		for(int turn=0; turn<T; turn++) {
+			
+			makeBoard(sc);
+			
+			//print2D(board);
+			
+			for(int i=0; i<M; i++) {
+				for(int j=0; j<N; j++) {
+					
+					int checkNum= board[i][j];
+					if(checkNum ==1 && visit[i][j] ==false) {
+						bfs(i, j);
+						answer++;
+						//break;
+					}
+				}
+			}
+			
+			//print2D(visit);
+			System.out.println(answer);
+			answer=0;
+
+		}
 		
+	}
+
+	
+	static void makeBoard(Scanner sc) {
 		
 		M = Integer.parseInt(sc.next());
 		N = Integer.parseInt(sc.next());
@@ -92,16 +98,13 @@ public class Main {
 	}
 
 	
-	static int bfs(int x, int y) {
+	static void bfs(int x, int y) {
 		
 		Queue<Node> Q = new LinkedList<>();
 		Node node = new Node(x,y);
 		Q.add(node);
 		visit[x][y] = true;
-		if(x==4 && y==5) {
-			System.out.println("call");
-		}
-		
+
 		while(Q.size()!=0) {
 			
 			Node new_node = Q.poll();
@@ -118,8 +121,6 @@ public class Main {
 				}
 			}
 		}
-		
-		return 1;
 	}
 	
 }

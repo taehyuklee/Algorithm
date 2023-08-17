@@ -1,3 +1,4 @@
+package java_ver.BinarySearch;
 import java.util.*;
 import java.io.*;
 

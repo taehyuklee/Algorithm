@@ -1,3 +1,4 @@
+package SearchAlgorithm;
 import java.util.*;
 import java.io.*;
 
