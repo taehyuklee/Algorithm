@@ -1,4 +1,3 @@
-package SearchAlgorithm;
 import java.util.*;
 import java.io.*;
 
@@ -14,7 +13,7 @@ class Node{
 	}
 }
 
-public class Main3 {
+public class Main {
 	
 	static int N, M; //N세로, M가로
 	static int[][] board;
