@@ -1,5 +1,4 @@
 import java.util.*;
-import java.io.*;
 
 class Horse{
 	int num, x, y, dir;
@@ -64,13 +63,10 @@ public class Main {
 		
 		while(true) {
 			
-			if(k>1000) {
-				System.out.println(-1);
-				break;
-			}
-			System.out.println(k);
 			k++;
+			
 			for(int i=0 ;i<K; i++) {
+			
 				Horse horse = horseList.get(i);
 				
 				//미리 탐험
@@ -80,37 +76,29 @@ public class Main {
 				//움직였을때 빨강이냐, 파랑이냐, 흰색이냐, 아님 벗어난거냐?
 				if(new_x<0 || new_y<0 || new_x>=N || new_y>=N) { //파랑 -> >=N 이걸로 했어야 했는데, 착각함.
 					reverseDir(horse);
-					System.out.println("Out");
 					move(horse, "B");
-					 print();
-					
-					continue;
-					
 				}else if(colorBoard[new_x][new_y] == 2) { //파랑.
 					reverseDir(horse);
-					System.out.println("Blue");
-					move(horse, "B");
-					 print();
-					
-					continue;
+					move(horse, "B");	
 				}
 				else if(colorBoard[new_x][new_y] ==1) { //빨강
 					move(horse, "R");
-					System.out.println("Red");
-					 print();
-					
-					continue;
-					
 				}else {//흰색
 					move(horse, "W");
-					System.out.println("White");
-					 print();
-					 
-					continue;
-					
+				}
+				
+				if(checkEnd(k)) {
+					//4개가 겹치는 순간을 check해줘야 하기때문에 말이 돌아갈때도 check해줘야함
+					return;
 				}
 		
 			}
+			
+			if(k>1000) {
+				System.out.println(-1);
+				break;
+			}
+			
 		}
 	}
 	
@@ -127,27 +115,7 @@ public class Main {
 		List<Horse> list_tartget = horseBoard[x][y];
 		int index = findHorseIndex(list_tartget, target_horse);
 		List<Horse> new_list = removeAndMakeTemp(index, list_tartget);
-		System.out.println(new_list);
-		
-//		if(color.equals("R")) {
-//			moveListRed(new_list, new_x, new_y);
-//		}else if(color.equals("W")) {
-//			moveList(new_list, new_x, new_y);
-//		}else {
-//			//파란색이거나 밖일때는 다시 한 번 판단해줘야 한다.
-//			if(colorBoard[new_x][new_y] ==1) { //빨강
-//				moveListRed(new_list, new_x, new_y);
-//				return;
-//				
-//			}else if(colorBoard[new_x][new_y] ==0) {//흰색
-//				moveList(new_list, new_x, new_y);
-//				return;
-//			}else {
-//				//Blue이거나 밖이므로 stay
-//				horseBoard[x][y].addAll(new_list);
-//			}
-//		}
-		
+
 		//새로 다시 판단해주는게 낫다.
 		if(new_x<0 || new_y<0 || new_x>=N || new_y>=N || colorBoard[new_x][new_y] == 2) { 
 			//여기서도 out되는건 막아줘야 하니까 이것부터.
@@ -222,18 +190,19 @@ public class Main {
 		}else if(horse.dir==3) {
 			horse.dir=2;
 		}
-		//horse.dir = (horse.dir +2)%2;
 	}
 	
-	
-	static void print() {
-		for(int k=0; k<horseBoard.length; k++) {
-			for (int j=0; j<horseBoard[0].length; j++) {
-				System.out.print(horseBoard[k][j] + " ");
+
+	static boolean checkEnd(int k) {
+		for(int a=0; a<N; a++) {
+			for(int b=0; b<N; b++) {
+				if(horseBoard[a][b].size()>=4) {
+					System.out.println(k);
+					return true;
+				}
 			}
-			System.out.println();
 		}
-		System.out.println();
+		return false;
 	}
 
 }
