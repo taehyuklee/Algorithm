@@ -13,7 +13,7 @@ class Horse{
 	
 	@Override
 	public String toString() {
-		return "num: " + this.num +" x: " + this.x + " y "+ this.y +" " + "dir " + this.dir + "|| ";
+		return "num: " + this.num +" x: " + this.x + " y "+ this.y +" " + "dir " + this.dir + "   ";
 	}
 }
 
@@ -24,7 +24,7 @@ public class Main {
 	static List<Horse>[][] horseBoard;
 	static List<Horse> horseList= new ArrayList<Horse>();
 
-	static int[] dx = {0,0,-1,1}, dy = {1,-1,0,0};
+	static int[] dx = {0,0,-1,1}, dy = {1,-1,0,0}; //우, 좌, 상, 하  
 
 	
 	public static void main(String[] args) {
@@ -60,48 +60,60 @@ public class Main {
 	static void solution(){
 		
 		//말이 한 바퀴 돌아감
-
-		for(int i=0 ;i<K; i++) {
-			Horse horse = horseList.get(i);
+		int k=0;
+		
+		while(true) {
 			
-			//미리 탐험
-			int new_x = horse.x +dx[horse.dir];
-			int new_y = horse.y +dy[horse.dir];
-			
-			//움직였을때 빨강이냐, 파랑이냐, 흰색이냐, 아님 벗어난거냐?
-			if(new_x<0 || new_y<0 || new_x>N || new_y>N) { //파랑
-				reverseDir(horse);
-				System.out.println("Out");
-				move(horse, "B");
-				 print();
-				continue;
-				
-			}else if(colorBoard[new_x][new_y] == 2) {
-				reverseDir(horse);
-				System.out.println("Blue");
-				move(horse, "B");
-				 print();
-				continue;
+			if(k>1000) {
+				System.out.println(-1);
+				break;
 			}
-			else if(colorBoard[new_x][new_y] ==1) { //빨강
-				move(horse, "R");
-				System.out.println("Red");
-				 print();
-				continue;
+			System.out.println(k);
+			k++;
+			for(int i=0 ;i<K; i++) {
+				Horse horse = horseList.get(i);
 				
-			}else {//흰색
-				move(horse, "W");
-				System.out.println("White");
-				 print();
-				continue;
+				//미리 탐험
+				int new_x = horse.x +dx[horse.dir];
+				int new_y = horse.y +dy[horse.dir];
 				
+				//움직였을때 빨강이냐, 파랑이냐, 흰색이냐, 아님 벗어난거냐?
+				if(new_x<0 || new_y<0 || new_x>=N || new_y>=N) { //파랑 -> >=N 이걸로 했어야 했는데, 착각함.
+					reverseDir(horse);
+					System.out.println("Out");
+					move(horse, "B");
+					 print();
+					
+					continue;
+					
+				}else if(colorBoard[new_x][new_y] == 2) { //파랑.
+					reverseDir(horse);
+					System.out.println("Blue");
+					move(horse, "B");
+					 print();
+					
+					continue;
+				}
+				else if(colorBoard[new_x][new_y] ==1) { //빨강
+					move(horse, "R");
+					System.out.println("Red");
+					 print();
+					
+					continue;
+					
+				}else {//흰색
+					move(horse, "W");
+					System.out.println("White");
+					 print();
+					 
+					continue;
+					
+				}
+		
 			}
-	
 		}
-
 	}
 	
-
 
 	static void move(Horse target_horse, String color) {
 		
@@ -117,12 +129,35 @@ public class Main {
 		List<Horse> new_list = removeAndMakeTemp(index, list_tartget);
 		System.out.println(new_list);
 		
-		if(color.equals("R")) {
+//		if(color.equals("R")) {
+//			moveListRed(new_list, new_x, new_y);
+//		}else if(color.equals("W")) {
+//			moveList(new_list, new_x, new_y);
+//		}else {
+//			//파란색이거나 밖일때는 다시 한 번 판단해줘야 한다.
+//			if(colorBoard[new_x][new_y] ==1) { //빨강
+//				moveListRed(new_list, new_x, new_y);
+//				return;
+//				
+//			}else if(colorBoard[new_x][new_y] ==0) {//흰색
+//				moveList(new_list, new_x, new_y);
+//				return;
+//			}else {
+//				//Blue이거나 밖이므로 stay
+//				horseBoard[x][y].addAll(new_list);
+//			}
+//		}
+		
+		//새로 다시 판단해주는게 낫다.
+		if(new_x<0 || new_y<0 || new_x>=N || new_y>=N || colorBoard[new_x][new_y] == 2) { 
+			//여기서도 out되는건 막아줘야 하니까 이것부터.
+			horseBoard[x][y].addAll(new_list);
+		}
+		else if (colorBoard[new_x][new_y] == 1) {
 			moveListRed(new_list, new_x, new_y);
-		}else if(color.equals("W")) {
+		}else if(colorBoard[new_x][new_y] == 0) {
 			moveList(new_list, new_x, new_y);
 		}
-
 		
 	}
 	
@@ -167,7 +202,7 @@ public class Main {
 			willMoveList.get(i).y = new_y;
 		}
 		
-		//역으로 바꾸는걸 어떻게 하지? 
+		//역으로 바꾸는걸 어떻게 하지? 일단 빡구현 
 		List<Horse> reversedHorse = new ArrayList<>();
 		for(int i=willMoveList.size()-1; i>=0; i--) {
 			reversedHorse.add(willMoveList.get(i));
@@ -178,8 +213,18 @@ public class Main {
 
 	
 	static void reverseDir(Horse horse) {
-		horse.dir = (horse.dir +2)%4;
+		if(horse.dir==0) {
+			horse.dir =1;
+		}else if(horse.dir==1) {
+			horse.dir=0;
+		}else if(horse.dir==2) {
+			horse.dir=3;
+		}else if(horse.dir==3) {
+			horse.dir=2;
+		}
+		//horse.dir = (horse.dir +2)%2;
 	}
+	
 	
 	static void print() {
 		for(int k=0; k<horseBoard.length; k++) {
