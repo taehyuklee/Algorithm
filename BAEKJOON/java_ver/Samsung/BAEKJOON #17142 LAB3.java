@@ -59,26 +59,28 @@ public class Main {
 	
 	static void bfs(int[] x_array, int[] y_array , int[] cnt_array) {
 		
-		Queue<int[]> Q = new LinkedList<>();
+		Queue<Node> Q = new LinkedList<>();
 		
 		//시작점을 모두 한 번에 넣어두고 시작하면 순차적으로 되겠네 Q구조상. 
 		for(int i=0; i<x_array.length; i++) {
-			Q.add(new int[] {x_array[i], y_array[i], cnt_array[i]});
+			Q.add(new Node(x_array[i], y_array[i], cnt_array[i]));
 		}
 		
 		while(!Q.isEmpty()) {
 			
-			int[] node = Q.poll();
+			Node node = Q.poll();
 			
 			for(int i=0; i<4; i++) {
-				int new_x = node[0] + dx[i];
-				int new_y = node[1] + dy[i];
+				int new_x = node.x + dx[i];
+				int new_y = node.y + dy[i];
 				
 				
-				if(new_x<0 || new_x>=N || new_y<0 || new_y>=N) continue;
+				if(new_x<0 || new_x>=N || new_y<0 || new_y>=N || visit[new_x][new_y] == true) continue;
 				if(status2[new_x][new_y]!=0) continue;
 				
-				
+				visit[new_x][new_y] = true;
+				Q.add(new Node(new_x, new_y, node.cnt+1));
+				status2[new_x][new_y] = node.cnt+1;
 				
 			}
 			
