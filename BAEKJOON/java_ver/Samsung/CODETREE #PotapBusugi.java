@@ -20,7 +20,7 @@ class Potap{
 
 public class Main {
 
-    private static int N, M, K;
+    private static int N, M, K, time =1;
     private static List<Potap> listPotap = new ArrayList<>();
     private static Potap[][] boardMap;
     private static boolean[][] visit;
@@ -60,12 +60,14 @@ public class Main {
     		Potap potap_receive = pickStrong();
 	        Potap potap_attack = pickWeak();
 	        
+	        
 	        //둘 다 뽑고나서 반영했어야 함..
-	        potap_attack.attack += N+M;
-	        potap_attack.involve = true;
-            potap_attack.recent = potap_attack.recent+1; //공격 횟수 한 번 늘려주고 
             System.out.println("약한자" + potap_attack);
             System.out.println("강한자" + potap_receive);
+	        potap_attack.attack += N+M;
+	        potap_attack.involve = true;
+            potap_attack.recent =  time; // 패착potap_attack.recent+1; //공격 횟수 한 번 늘려주고 (이게 너무 힘들었다)
+
             System.out.println();
 	
 	        //공격자의 공격 및 부서짐
@@ -80,10 +82,12 @@ public class Main {
 	        int[][] after = print2D(boardMap);
 	        printDiffere(before, after);
 	        System.out.println(pickStrong().attack);
+	        
+	        time++;
     	}
     	
     	//getAnswer
-    	System.out.println(pickStrong().attack);
+//    	System.out.println(pickStrong().attack);
 
 
 
@@ -112,6 +116,9 @@ public class Main {
             }
 
         });
+        
+//        System.out.println("약자");
+//        System.out.println(listPotap);
 
 
         for(int i=0; i<listPotap.size(); i++){
@@ -149,6 +156,9 @@ public class Main {
 
         });
         
+//        System.out.println("강자");
+//        System.out.println(listPotap);
+
         return listPotap.get(0);
     }
 
@@ -169,6 +179,7 @@ public class Main {
 	    			 target.attack -= source.attack;
 	    			 if(target.attack<0) target.attack = 0;
 	    			 target.involve = true; //전쟁에 연루됨 
+	    			 
 	    		 }else {
 	    			 boardMap[attackedNode[0]][attackedNode[1]].attack -= (int) source.attack/2;
 	    			 if(boardMap[attackedNode[0]][attackedNode[1]].attack<0) boardMap[attackedNode[0]][attackedNode[1]].attack=0;
@@ -181,6 +192,7 @@ public class Main {
     		 System.out.println("포탄");
     		 target.attack -= source.attack;
     		 if(target.attack<0) target.attack = 0;
+    		 
     		 //involve한거 까먹음 (1일 걸림 이것때문에_)
     		 target.involve = true; //전쟁에 연루됨 -> 이거 어찌해야할까..
     		 
@@ -310,7 +322,7 @@ public class Main {
     	int[][] newTemp = new int[N][M];
     	for(int i=0; i<boardMap.length; i++) {
     		for(int j=0; j<boardMap[0].length; j++) {
-    			System.out.printf("%6d", boardMap[i][j].attack);
+    			System.out.printf("%6d", boardMap[i][j].recent);
     			newTemp[i][j] = boardMap[i][j].attack;
     		}
     		System.out.println();
