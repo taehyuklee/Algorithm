@@ -19,9 +19,9 @@ class Node{
 
 public class Main {
 	
-	private static int N, M;
-	private static int[][] board, testBoard;
-	private static boolean[][] visit, visit2;
+	private static int N, M, zero_cnt, time, answer = Integer.MAX_VALUE;
+	private static int[][] board, testBoard, testBoard2;
+	private static boolean[][] visit;
 	private static List<Node> virusList = new ArrayList<>();
 	private static List<List<Node>> combinationList = new ArrayList<>();
 	private static int[] dx = {-1,1,0,0}, dy = {0,0,-1,1};  //상하좌우
@@ -35,9 +35,8 @@ public class Main {
 		M = sc.nextInt();
 		
 		board = new int[N][N];
-		testBoard = new int[N][N];
+		testBoard = new int[N][N]; testBoard2 = new int[N][N];//test용 debugging용
 		visit = new boolean[N][N];
-		visit2 = new boolean[N][N];
 		
 		for(int i=0; i<N; i++) {
 			for(int j=0; j<N; j++) {
@@ -45,11 +44,16 @@ public class Main {
 				
 				if(board[i][j]==2) {
 					virusList.add(new Node(i, j, 0));
+					testBoard[i][j] = -200; testBoard2[i][j] = -200;
+
 				}
 				if(board[i][j]==1) {
 					testBoard[i][j] = -1;
-					visit[i][j] = true;
-					visit2[i][j] = true;
+					testBoard2[i][j] = -1;
+					visit[i][j] = true; 					
+				}
+				if(board[i][j] ==0) {
+					zero_cnt +=1;
 				}
 			}
 		}
@@ -68,44 +72,48 @@ public class Main {
 		int start =0;
 		int depth=0;
 		combination(virusList, visit, start, depth, M);
-		//System.out.println(combinationList.size());
-
 		
 		//BFS로 최소 시간초 계산
 		for(int i=0; i<combinationList.size(); i++) {
-		//	bfs(combinationList.get(i)); 
+			
+			bfs(combinationList.get(i)); 		
+			
+			//visit 초기화
+			initvisit();
+			initTestBoard();
+		}
+
+		
+		if(answer==Integer.MAX_VALUE) {
+			answer = -1;
 		}
 		
-		
-		List<Node> testList = new ArrayList<>();
-		Node node1 = new Node(0,0,0);
-		Node node2 = new Node(1,5,0);
-		Node node3 = new Node(4,3,0);
-		testList.add(node1); testList.add(node2); testList.add(node3);
-		bfs(testList);
-		
+		System.out.println(answer);
 		
 	}
 	
 	static void bfs(List<Node> partOfComb) {
 		
 		Queue<Node> Q = new LinkedList<>();
-		List<Node> temp = new ArrayList<>();
-
 		
 		for(int i=0; i<partOfComb.size(); i++) {
 			Node node = partOfComb.get(i);
 			visit[node.x][node.y] = true;
-			visit2[node.x][node.y] = true;
+			testBoard[node.x][node.y] = -100;
 			Q.add(partOfComb.get(i));
 		}
+
+		time = Integer.MIN_VALUE;
+		int tmp_cnt = zero_cnt;
 		
 		while(!Q.isEmpty()) {
 			
 			Node node = Q.poll();
-			if(check()) {
-				temp.add(node);
-				//System.out.println(node.cnt);
+			
+			if(tmp_cnt==0) {
+
+				time = Math.max(node.cnt, time);
+				continue; //이걸 안해서 계속 진행되었구나..
 			}
 
 			for(int i=0; i<4; i++) {
@@ -118,22 +126,20 @@ public class Main {
 				if(visit[new_x][new_y] == true) continue; //방문한 곳일때
 				
 				visit[new_x][new_y] = true;
+
 				Q.add(new Node(new_x, new_y, node.cnt+1));
-				testBoard[new_x][new_y] = node.cnt+1;
+				testBoard[new_x][new_y] = node.cnt+1; //test Board 모니터링용.
+				if(board[new_x][new_y] == 0) tmp_cnt-=1;
 				
 			}
 			
-			print2D();
-			
 		}
 		
-		System.out.println(temp);
-		
-		//visit 초기화
-		initvisit();
+		if(time==Integer.MIN_VALUE) return;
+		answer = Math.min(answer, time);
 		
 	}
-	
+
 	static void combination(List<Node> listNode, boolean[] visit, int start, int depth, int r) {
 		
 		//종료 조건
@@ -161,7 +167,7 @@ public class Main {
 	static void print2D() {
 		for(int i=0; i<N; i++) {
 			for(int j=0; j<N; j++) {
-				System.out.printf("%3d",testBoard[i][j]);
+				System.out.printf("%5d",testBoard[i][j]);
 			}
 			System.out.println();
 		}
@@ -180,9 +186,13 @@ public class Main {
 	}
 	
 	static void initvisit() {
+		visit = new boolean[N][N];
+	}
+	
+	static void initTestBoard() {
 		for(int i=0; i<N; i++) {
 			for(int j=0; j<N; j++) {
-				visit[i][j] = visit2[i][j];
+				testBoard[i][j] = testBoard2[i][j];
 			}
 		}
 	}
