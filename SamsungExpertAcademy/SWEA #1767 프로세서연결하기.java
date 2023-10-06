@@ -35,7 +35,8 @@ class Solution{
 	private static int[][] map;
 	private static boolean[][] visit;
 	private static List<Node> restNodes;
-	private static int[] dx = {-1,1,0,0}, dy= {0,0,-1,1};
+//	private static List<List<Node>> permLists;
+	private static int[] dx = {-1,1,0,0,0}, dy= {0,0,-1,1,0};
 	
 	public static void printVisit() {
 		for(int i=0; i<N; i++) {
@@ -58,6 +59,7 @@ class Solution{
 			
 			N = sc.nextInt();
 			restNodes = new ArrayList<>();
+//			permLists = new ArrayList<>();
 			map = new int[N][N];
 			visit = new boolean[N][N];
 			Status status = new Status(0,0);
@@ -94,28 +96,68 @@ class Solution{
 	
 	public static void solution(List<Node> restNodes, Status status) {
 		
+		if(restNodes.size()==0) {
+			answerLength=0;
+			return;
+		}
+		
+
+		
+//		boolean[] visit = new boolean[restNodes.size()];
+//		List<Node> output = new ArrayList<>();
+//		permutation(restNodes, visit, output, 0, 3);
+		
+		//\for(int i=0; i<permLists.size(); i++) {
+			//restNodes = permLists.get(i);
+		
+
 		Node node = restNodes.get(0);
 		dfs(node, status, 0);
 
+		//}
+		
+
 		
 	}
+//	
+//	public static void permutation(List<Node> array, boolean[] visit, List<Node> output, int depth, int r) {
+//		
+//		//종료조건
+//		if(depth==r) {
+////			for(int i=0; i<output.size(); i++) {
+////				if(output.get(i) !=null) {
+////					System.out.print(output.get(i) + " ");
+////				}
+////			}
+//			permLists.add(output);
+//			return;
+//		}
+//		
+//		
+//		//탐색 수행 
+//		for(int i=0; i<restNodes.size(); i++) {
+//			
+//			if(visit[i]==false) {
+//				visit[i] = true;
+//				output.add(restNodes.get(i));
+//				permutation(array, visit, output, depth+1, r);
+//				visit[i] = false;
+//			}
+//			
+//		}
+//
+//	}
 	
 	public static void dfs(Node node, Status status, int depth) {
 		
 		//System.out.println(status.core + " " + status.length);
-		
-		int tempLength = status.length;
-		int tempCore = status.core;
+		//System.out.println(node);
+
 		
 		if(status.core>answerCore) { //status.core>=answerCore 이 조건이면 안됐었음.
 			answerCore = status.core;
 			answerLength=status.length;
-			
-//			if(status.length!=0  && answerCore>=status.core && answerLength>=status.length) {
-//				answerLength=status.length;
-//			}else {
-//				answerLength=status.length;
-//			}
+
 
 		}else if(status.core == answerCore) {
 			if(status.length!=0  && answerLength>status.length) {
@@ -130,7 +172,7 @@ class Solution{
 		
 //		System.out.println("depth ---------------" +   depth);
 		//do connection
-		for(int dir=0; dir<4; dir++) {
+		for(int dir=0; dir<5; dir++) {
 
 			//길이 연장.
 			for(int l =1; l<N; l++) {
@@ -138,7 +180,15 @@ class Solution{
 				int new_x = node.x + dx[dir]*l;
 				int new_y = node.y + dy[dir]*l;
 				
-				if(visit[new_x][new_y] == true) {
+				if(depth ==0 && dir==4) {
+					int new_depth = depth+1;
+					Node new_node =null;
+					if(new_depth<=restNodes.size()-1) {
+						new_node = restNodes.get(new_depth);
+					}
+					dfs(new_node, status, depth+1);
+					
+				}else if(visit[new_x][new_y] == true) {
 					if(l!=1) {
 						for(int k=1; k<l; k++) {
 	
@@ -148,6 +198,16 @@ class Solution{
 							visit[erase_x][erase_y] = false;
 						}
 					}
+					
+					if(dir==3) {
+						int new_depth = depth+1;
+						Node new_node =null;
+						if(new_depth<=restNodes.size()-1) {
+							new_node = restNodes.get(new_depth);
+						}
+						dfs(new_node, status, new_depth);
+					}
+					
 					break;
 					
 				}else if(new_x==0 || new_x==N-1 || new_y==0 || new_y==N-1){
@@ -162,11 +222,10 @@ class Solution{
 					if(new_depth<=restNodes.size()-1) {
 						new_node = restNodes.get(new_depth);
 					}
-					//printVisit();
+//					printVisit();
+					
 					dfs(new_node, status, new_depth);
-					
-					//System.out.println("erase l   " + l);
-					
+
 					for(int k=1; k<=l; k++) {
 
 						int erase_x = node.x + dx[dir]*k; // l이 아니라 k로 해야함 
@@ -188,30 +247,30 @@ class Solution{
 //				printVisit();
 //				System.out.println(status);
 //				System.out.println("\n\n");
-				
-				
+			
 			
 			}
-
 		}
+	
+		//아무것도 안한 케이스 
+
 		
-		
-		
+
 	}
 	
-	public static void eraseTrace(Node node, int dir, int l) {
-		System.out.println("startErase");
-		
-		//기존에 visit 했던건 지워줘야지 
-		for(int k=1; k<l; k++) {
-
-			int erase_x = node.x + dx[dir]*k; // l이 아니라 k로 해야함 
-			int erase_y = node.y + dy[dir]*k;
-			
-			System.out.println(erase_x + "   " + erase_y);
-			visit[erase_x][erase_y] = false;
-		}
-		
-	}
+//	public static void eraseTrace(Node node, int dir, int l) {
+//		System.out.println("startErase");
+//		
+//		//기존에 visit 했던건 지워줘야지 
+//		for(int k=1; k<l; k++) {
+//
+//			int erase_x = node.x + dx[dir]*k; // l이 아니라 k로 해야함 
+//			int erase_y = node.y + dy[dir]*k;
+//			
+//			System.out.println(erase_x + "   " + erase_y);
+//			visit[erase_x][erase_y] = false;
+//		}
+//		
+//	}
 
 }
