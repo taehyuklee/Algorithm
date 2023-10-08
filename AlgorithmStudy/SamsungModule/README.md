@@ -8,6 +8,30 @@
    
 2. Periodic boundary Condition - 주기적 경계문제. 경계를 넘어가는 순간 그 다음 경계에 영향을 준다.
    - 기존에 경계를 넘어 다음 경계로 넘어가는 문제 ('포탑 부수기' 문제)
+   - 여기서 중요한 것은 index를 내가 '0'부터 잡느냐 아니면 '1'부터 잡느냐이다 0 ~ N-1 or 1 ~ N 이렇게 되면 달라진다.
+     ```java
+     //이 경우는 1칸씩 step by step으로 움직일때의 케이스
+     //0 ~ N-1 indexing잡았을 때
+     int new_x = (N + (x + dx[dir]))%N;
+     int new_y = (M + (y + dy[dir]))%M;
+
+     //1 ~ N indexing 잡았을 때 (밖에 1을 더해주고 내부적으로 1을 빼준다)
+     int new_x = (N+((x-1)+dx[dir]))%N + 1;
+     int new_y = (M+((y-1)+dy[dir]))%M + 1;
+     ```
+
+      ```java
+     //이 경우는 한 번에 크게 움직일때의 케이스
+     //0 ~ N-1 indexing잡았을 때
+     int distance = 150000000;
+     int new_x = Math.abs((N + (x + distance)))%N;
+     int new_y = Math.abs((M + (y + distance)))%M;
+
+     //1 ~ N indexing 잡았을 때 (밖에 1을 더해주고 내부적으로 1을 빼준다)
+     int new_x = Math.abs((N+((x-1)+distance)))%N + 1;
+     int new_y = Math.abs((M+((y-1)+distance)))%M + 1;
+     ``` 
+     
    <br>
 3. 거꾸로 방향 바꾸는 문제
    - 대표적으로 '주사위 문제3' 와 '토끼와 경주' 문제가 있다. 이 부분에 대해서 이해후 암기
