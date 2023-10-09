@@ -9,6 +9,7 @@
 2. Periodic boundary Condition - 주기적 경계문제. 경계를 넘어가는 순간 그 다음 경계에 영향을 준다.
    - 기존에 경계를 넘어 다음 경계로 넘어가는 문제 ('포탑 부수기' 문제)
    - 여기서 중요한 것은 index를 내가 '0'부터 잡느냐 아니면 '1'부터 잡느냐이다 0 ~ N-1 or 1 ~ N 이렇게 되면 달라진다.
+   - ```PeriodicBoundary Distance & Unit step.java```
      ```java
      //이 경우는 1칸씩 step by step으로 움직일때의 케이스
      //0 ~ N-1 indexing잡았을 때
