@@ -79,8 +79,9 @@
 2. List [익숙함] : add, get, remove, clear {항상 개발할때 많이 사용}
 
 3. HashMap [익숙함 半] : put, get(key) {이정도만 많이 사용} => 하지만, Entry가져오는 것 자체는 크게 익숙하지 않다.
+   * LinkedHashMap<>() : 이걸로 Map 인터페이스를 구현하면, 순서가 보장된다. 다만, 성능이 많이 떨어진다.
 
-4. Set [익숙하지 않음] : add.. ?
+5. Set [익숙하지 않음] : add.. ?
    - Set의 경우 add한 이후 출력하기에 Iterator를 사용해야 한다. 또는 List형으로 변경해서 출력해도 가능하다.
    ```java
    Set<String> set = new HashSet<>(Arrays.asList("a","b","c"));
