@@ -74,14 +74,15 @@
 ### [자료구조 사용]
 * Java에서 Collections는 공통적인 Interface가 존재하고, 거기에는 size(), isEmpty(), contains(object)가 존재한다.
 
-1. Queue [익숙함] : add, poll, peek, remove {항상 개발할때 많이 사용}
+1. Queue [익숙함] - LinkedList 구현체 : add, poll, peek, remove {항상 개발할때 많이 사용}
+   * PriorityQueue는 넣은 것을 poll을 할때 내가 정한 순서대로 나오게 된다. 그냥 출력하면 그 순서가 보장되는지 알수 없다.
 
-2. List [익숙함] : add, get, remove, clear {항상 개발할때 많이 사용}
+3. List [익숙함] - ArrayList 구현체 : add, get, remove, clear {항상 개발할때 많이 사용}
 
-3. HashMap [익숙함 半] : put, get(key) {이정도만 많이 사용} => 하지만, Entry가져오는 것 자체는 크게 익숙하지 않다.
+4. Map [익숙함 半] - HashMap 구현체 : put, get(key) {이정도만 많이 사용} => 하지만, Entry가져오는 것 자체는 크게 익숙하지 않다.
    * LinkedHashMap<>() : 이걸로 Map 인터페이스를 구현하면, 순서가 보장된다. 다만, 성능이 많이 떨어진다.
 
-5. Set [익숙하지 않음] : add.. ?
+5. Set [익숙하지 않음] - HashSet 구현체: add.. ?
    - Set의 경우 add한 이후 출력하기에 Iterator를 사용해야 한다. 또는 List형으로 변경해서 출력해도 가능하다.
    ```java
    Set<String> set = new HashSet<>(Arrays.asList("a","b","c"));
@@ -94,9 +95,7 @@
    List<String> list = new ArrayList<>(set);
    //이렇게 해서 간편하게 사용 가능하다.
    ```
-
-6. PriorityQueue [익숙하지 않음]: add, poll, peek, remove {Queue와 똑같지만, 내부적으로 순서를 정해줘야 한다}
-   * PriorityQueue는 넣은 것을 poll을 할때 내가 정한 순서대로 나오게 된다. 그냥 출력하면 그 순서가 보장되는지 알수 없다.
+   
 
 <br>
 * 필요시 array자체를 많이 사용하기도 함 구현할때
