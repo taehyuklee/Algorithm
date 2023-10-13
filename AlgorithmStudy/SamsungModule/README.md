@@ -4,6 +4,28 @@
 1. 회전시키기 90도 방향으로 좌표 또는 일부 회전하기, 반시계방향, 시계방향 모두
    - 메이즈러너 문제 등 다양한 곳에서 일부 좌표를 90도 회전하는 문제가 나온다. ```RotationImpl.java```
    - '예술성' 문제
+     ```java    		
+		int N=5;
+		int[][] map = new int[N][N];
+		for(int i=0; i<5; i++) {
+			map[i][0]=1;
+		}
+		
+        //기존에 map이 있다고 가정.
+		int start_x = 0, end_x = N;
+		int start_y = 0, end_y = N;
+		
+		//90도 시계방향 회전
+		int[][] newMap = new int[N][N];
+		  
+		for(int i=start_x; i<end_x; i++){
+			for(int j=start_y; j<end_y; j++){
+				newMap[start_x+(j-start_y)][(end_y-1)-(i-start_x)] = map[i][j];
+			}
+		}
+		  
+      ```
+     
    <br>
    
 2. Periodic boundary Condition - 주기적 경계문제. 경계를 넘어가는 순간 그 다음 경계에 영향을 준다.
