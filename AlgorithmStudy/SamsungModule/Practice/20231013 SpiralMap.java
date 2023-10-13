@@ -2,17 +2,18 @@ import java.util.*;
 import java.util.Map.*;
 
 class Node{
-	int x, y, dir;
+	int x, y, dir, rDir;
 
-	public Node(int x, int y, int dir) {
+	public Node(int x, int y, int dir, int rDir) {
 		this.x =x;
 		this.y= y;
 		this.dir = dir;
+		this.rDir = rDir;
 	}
 	
 	@Override
 	public String toString() {
-		return "[x: " + x + " y: " + y + " dir: " + dir + "] ";
+		return "[x: " + x + " y: " + y + " dir: " + dir + " rDir " + rDir + "] ";
 	}
 }
 
@@ -32,6 +33,7 @@ public class Main {
 					}	
 				}
 			}
+			System.out.println(entry.getValue());
 			print2D(map);
 		}
 
@@ -63,14 +65,14 @@ public class Main {
 		int[] dy = {-1,0,1,0};
 		
 		int index = 0;
-		int dir = 0;
+		int dir = 0, rDir=2;
 		int cur_depth = 0;
 		int ref_depth = 1;
 		int turn=0;
 		
 		int x_0 = N/2;
 		int y_0 = N/2;
-		spiralMap.put(index, new Node(x_0, y_0, dir));
+		spiralMap.put(index, new Node(x_0, y_0, dir, rDir));
 		
 		while(true) {
 			
@@ -82,22 +84,21 @@ public class Main {
 			int new_x = x_0 + dx[dir];
 			int new_y = y_0 + dy[dir];
 			
-			spiralMap.put(index, new Node(new_x, new_y, dir));
+			spiralMap.put(index, new Node(new_x, new_y, dir, rDir));
 			cur_depth++;
 			
 			if(cur_depth == ref_depth) {
 				
 				dir = (dir+1)%4;
+				rDir = (dir+2)%4;
 				cur_depth=0;
 				turn ++;
-				spiralMap.put(index, new Node(new_x, new_y, dir));
+				spiralMap.put(index, new Node(new_x, new_y, dir,rDir));
 				if(turn==2) {
-					
 					ref_depth++;
 					turn=0;
 				}
-				
-				
+
 			}
 			
 			x_0 = new_x;
