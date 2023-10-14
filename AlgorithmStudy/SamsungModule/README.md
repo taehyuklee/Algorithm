@@ -88,22 +88,58 @@
 		});
 		```
 	  	<br>
-	   	 예를 들어  List에 0부터 100까지 숫자가 임의대로 있다고 하자. 그리고 0은 나열의 숫자가 아니라고 한다. 이럴때 어떤 조건을 달아서 sort를 해야 할까?
+    
+	   	 - 예를 들어  List에 0부터 100까지 숫자가 임의대로 있다고 하자. 그리고 0은 나열의 숫자가 아니라고 한다.<br>
+     	  	Q. 이럴때 어떤 조건을 달아서 sort를 해야 할까?<br>
 	    
-	  	 ```java
-	    
-		//아래와 같이 있을때 0은 모두 뒤로 밀어 넣고 나머지만 앞에 나열하고 싶다. (Priority Queue의 단골문제)
-	   	 List<Integer> list = new ArrayList<>(Arrays.asList(1,9,2,0,3,4,0,1,4,0,2,30,0,0,1,30,54,0,0,5,6));
-	    
-		 Collections.sort(list, new Comparator<Integer>() {
-			@Override
-			public int compare(Integer o1, Integer o2) { //양수면 순서대로, 음수면 역순
-				if(o1==0){return 1;}
-				//이렇게 하면 된다. 비교의 기준은 항상 o1이라고 생각하면 되고 o1이 들어왔을때 1을 함으로써 뒤로 바꿔준다.
-			     return o1-o2; //o1은 현재 o2는 다음꺼 (o1을 기준으로 o2와 비교할 것)
-			}
+	  	```java
+		List<Integer> list = new ArrayList<>(Arrays.asList(1,30,0,0,1,3,2,1,0,5,2,0,3));
+		Collections.sort(list, new Comparator<Integer>() {
+		    @Override
+		    public int compare(Integer o1, Integer o2) {
+		        if (o1 == 0) {
+		            if (o2 == 0) {
+		                return 0; // o1과 o2가 둘 다 0이면 같다.
+		            } else {
+		                return 1; // o1만 0이므로 o1을 뒤로 보낸다.
+		            }
+		        } else if (o2 == 0) {
+		            return -1; // o2만 0이므로 o2를 뒤로 보낸다.
+		        } else {
+		            return o1.compareTo(o2); // o1과 o2가 둘 다 0이 아니면 숫자의 크기로 정렬한다.
+		        }
+		    }
 		});
+
 		```
+
+     		
+      	
+	  	- 그리고 Comparator는 기본적으로 int type을 반환하게 되어 있는데 만약 Long type이라면? 그냥 compareTo그대로 쓰면 된다. <br>
+               [o1-o2 -> o1.compareTo(o2), o2-o1 -> o2.compareTo(o1)]  <br>
+      
+ 		```java
+		List<Long> list2 = new ArrayList<>(Arrays.asList(1L,30L,0L,0L,1L,3L,2L,1L,0L,5L,2L,0L,3L));
+		Collections.sort(list2, new Comparator<Long>() {
+		    @Override
+		    public int compare(Long o1, Long o2) {
+		        if (o1 == 0) {
+		            if (o2 == 0) {
+		                return 0; // o1과 o2가 둘 다 0이면 같다.
+		            } else {
+		                return 1; // o1만 0이므로 o1을 뒤로 보낸다.
+		            }
+		        } else if (o2 == 0) {
+		            return -1; // o2만 0이므로 o2를 뒤로 보낸다.
+		        } else {
+		            return o1.compareTo(o2); // o1과 o2가 둘 다 0이 아니면 숫자의 크기로 정렬한다.
+		        }
+		    }
+		});
+		System.out.println(list2);
+
+		```
+      	
  
    <br>
 6. BFS - 최단거리 찾는 문제
