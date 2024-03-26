@@ -96,6 +96,7 @@ public class Main {
 	static Turret[][] board;
 	static List<Turret> turretList = new ArrayList<>(); //포탑이 죽으면 List에서 제거하는 식으로 가자.
 	static int[] dx = {0, 1,0,-1}, dy = {1,0,-1,0}; //우하좌상
+	static int[] dx2 = {-1,-1,-1, 0, 1, 1, 1, 0}, dy2 = {-1,0,1,1,1,0,-1,-1}; //8방향
 
 
 
@@ -218,25 +219,87 @@ public class Main {
 		}
 		
 		//확인 과정. 
-		System.out.println(strongest);
+//		System.out.println(strongest);
 		
 		//선정 이후 레이저 공격
-		laserAttack(attacker, strongest);
+
+//		print2D(board);
+//		System.out.println("   ");
+		boolean bomb = laserAttack(attacker, strongest);
+//		print2D(board);
+		
+		if(bomb) explode(attacker, strongest);
+		
+		//포탑 정비
+
 		
 	}
 	
-	public static void laserAttack(Turret attacker, Turret reciver) {
+	public static void organize() {
+		
+	}
+	
+	public static void explode(Turret attacker, Turret target) {
+		
+		for(int i=0; i<8; i++) {
+			int new_x = (N+target.x + dx2[i])%N;
+			int new_y = (M+target.y + dy2[i])%M;
+			board[new_x][new_y].attack -= attacker.attack/2;
+			if(board[new_x][new_y].attack<0) board[new_x][new_y].attack=0;
+		}
+		
+		target.attack-=attacker.attack;
+		if(target.attack<0) target.attack = 0;
+		
+	}
+	
+	public static boolean laserAttack(Turret attacker, Turret reciver) {
 		
 		List<int[]> attackTrace= bfs(attacker, reciver);
 		
-		System.out.println("trace표시");
-		for(int i=0 ;i< attackTrace.size(); i++) {
-			int[] element = attackTrace.get(i);
-			System.out.print(element[0] + " , " + element[1] + " | ");
+//		System.out.println("trace표시");
+//		for(int i=0 ;i< attackTrace.size(); i++) {
+//			int[] element = attackTrace.get(i);
+//			System.out.print(element[0] + " , " + element[1] + " | ");
+//		}
+		
+		//Bomb 공격 여부
+		if(attackTrace.size() ==0) {
+			return true;
+		}else {
+			//Laser공격
+			for(int i=0; i<attackTrace.size(); i++) {
+				int[] coord = attackTrace.get(i);
+				
+				for(int j=0; j<turretList.size(); j++) {
+					if(coord[0] == turretList.get(j).x && coord[1] == turretList.get(j).y) {
+						Turret targetTurret  = turretList.get(j);
+						
+						if(i!=attackTrace.size()-1) {
+							//1/2로 경로에 있는 애들 공격력 줄이고
+							targetTurret.attack -= attacker.attack/2;
+							if(targetTurret.attack<0) {
+								targetTurret.attack = 0;
+								turretList.remove(targetTurret);
+								i--;
+							}
+						}else {
+							//target은 공격력 만큼 줄이고 
+							targetTurret.attack -= attacker.attack;
+							if(targetTurret.attack<0) {
+								targetTurret.attack = 0;
+								turretList.remove(targetTurret);
+								i--;
+								
+							}	
+						}						
+					}
+				}
+				
+			}
+			
+			return false;
 		}
-		
-		//
-		
 	}
 	
 	public static List<int[]> bfs(Turret attacker, Turret reciver) {
@@ -303,10 +366,7 @@ public class Main {
 //
 //	}
 	
-	public static void explode() {
-		
-		
-	}
+
 
 }
 
