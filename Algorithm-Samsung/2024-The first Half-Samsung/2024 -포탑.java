@@ -1,4 +1,3 @@
-/*
  * N x M 격자
  * 각 포탑에 공격력 존재, if 포탑 공격력 <=0 포탑은 부서짐
  * 최초로 공격력이 0인 포탑이 존재할 수 있다.
@@ -97,6 +96,8 @@ public class Main {
 	static List<Turret> turretList = new ArrayList<>(); //포탑이 죽으면 List에서 제거하는 식으로 가자.
 	static int[] dx = {0, 1,0,-1}, dy = {1,0,-1,0}; //우하좌상
 	static int[] dx2 = {-1,-1,-1, 0, 1, 1, 1, 0}, dy2 = {-1,0,1,1,1,0,-1,-1}; //8방향
+	static List<int[]> involved;
+	static int answer;
 
 
 
@@ -129,8 +130,8 @@ public class Main {
 			}
 		}
 		
-		print2D(board);
-		System.out.println(turretList);
+//		print2D(board);
+//		System.out.println(turretList);
 		
 		
 		
@@ -138,21 +139,42 @@ public class Main {
 		
 		//총 4가지 action이 K번 반복 (전체 횟수) 
 		
-		//공격자 선정
-		Turret attacker = selectTurret(board, turretList);
+		for(int i=0; i<K; i++) {
+			//공격자 선정
+			Turret attacker = selectTurret(board, turretList);
+			
+			
+			//공격자의 공격
+			attackerAttack(attacker, turretList);
+			
+			
+			//포탑 부서짐
+			
+			
+			//포탑 정비
+			
+			//마지막 포탑
+//			System.out.println(countLiveTurret());
+			if(countLiveTurret()==1) break;
+		}
+
+
+		Turret turret = turretList.get(0);
+		System.out.println(turret.attack);
 		
-		
-		//공격자의 공격
-		attackerAttack(attacker, turretList);
-		
-		
-		//포탑 부서짐
-		
-		
-		//포탑 정비
-		
-		
-		
+	}
+	
+	
+	public static int countLiveTurret() {
+		int cnt = 0;
+		for(int i=0; i<N; i++) {
+			for(int j=0; j<M; j++) {
+				if(board[i][j].attack==0) {
+					cnt++;
+				}
+			}
+		}
+		return N*M-cnt;
 	}
 	
 	public static Turret selectTurret(Turret[][] board, List<Turret> turretList) {
@@ -223,19 +245,99 @@ public class Main {
 		
 		//선정 이후 레이저 공격
 
-//		print2D(board);
-//		System.out.println("   ");
+		System.out.println(" 이전  ");
+		System.out.println(turretList);
+		print2D(board);
+
 		boolean bomb = laserAttack(attacker, strongest);
 //		print2D(board);
 		
 		if(bomb) explode(attacker, strongest);
 		
+		
+		//여기서 attack한 포탑 외에 모두 time을 +1을 해줘야 한다. 
+		plusTime(attacker);
+		
 		//포탑 정비
-
+		System.out.println(" 이후  ");
+		System.out.println("strongetst" +  strongest);
+		print2D(board);
+		System.out.println("  ");
+		organize(attacker, strongest);
+		
+		System.out.println(" final  ");
+		print2D(board);
 		
 	}
 	
-	public static void organize() {
+	public static void plusTime(Turret attacker) {
+			
+		for(int i=0; i<N; i++) {
+			for(int j=0; j<M; j++) {
+				Turret turret = board[i][j];
+				if(turret != attacker) {
+					turret.time ++;
+				}
+			}
+		}
+		attacker.time=0;
+		
+	}
+	
+	public static void organize(Turret attacker, Turret reciver) {
+		
+//		System.out.println("trace표시");
+//		for(int i=0 ;i< involved.size(); i++) {
+//			int[] element = involved.get(i);
+//			System.out.print(element[0] + " , " + element[1] + " | ");
+//		}
+//		System.out.println(turretList);
+//		System.out.println("  ");
+//		
+		//이 부분 다시 생각해 볼 필요가 있다.
+//		for(int i=0; i<turretList.size(); i++) {
+//			for(int j=0; j<involved.size(); j++) {
+//				if(turretList.get(i).x == involved.get(j)[0] && turretList.get(i).y == involved.get(j)[1]) continue;
+//				if(turretList.get(i) == attacker) continue;
+//				if(turretList.get(i) == reciver) continue;
+//				System.out.println(turretList.get(i));
+//				System.out.println(involved.get(j)[0] + "  " + involved.get(j)[1] + "  ");
+//				turretList.get(i).attack++;	//더하면 예를 들어 involved에서 2번째에 걸리면 이미 앞에 1번째에서는 더하게 된다. 따라서 true false로 두고 해야함.
+//				break;
+//			}
+//		}
+		print2D(board);
+
+		for(int i=0; i<N; i++) {
+			for(int j=0; j<M; j++) {
+				Turret turret = board[i][j];
+				boolean add = true;		
+				for(int k=0; k<involved.size(); k++) {
+					//하나씩 다 해주는게 제일 안전함.
+					if(turret.x == involved.get(k)[0] && turret.y == involved.get(k)[1] ) break;
+					if(turret.attack ==0) break;
+					if(attacker.x == i && attacker.y == j) break; //만약 여기서 != 조건으로 하기 위해서는?
+//					System.out.println("과연 들   " + attacker  +  "  " +  i +  "  , " +   j + "   " + involved.get(k)[0] + "    " +  involved.get(k)[1]);
+
+					turret.attack++;
+					break;
+				}
+					
+
+				}
+
+			}
+		
+	
+		Collections.sort(turretList, new Comparator<Turret>() {
+
+			@Override
+			public int compare(Turret o1, Turret o2) {
+				return o2.attack - o1.attack;
+			}
+			
+		});
+		
 		
 	}
 	
@@ -244,6 +346,7 @@ public class Main {
 		for(int i=0; i<8; i++) {
 			int new_x = (N+target.x + dx2[i])%N;
 			int new_y = (M+target.y + dy2[i])%M;
+			if(board[new_x][new_y].attack==0) continue;
 			board[new_x][new_y].attack -= attacker.attack/2;
 			if(board[new_x][new_y].attack<0) board[new_x][new_y].attack=0;
 		}
@@ -256,6 +359,7 @@ public class Main {
 	public static boolean laserAttack(Turret attacker, Turret reciver) {
 		
 		List<int[]> attackTrace= bfs(attacker, reciver);
+		involved = attackTrace;
 		
 //		System.out.println("trace표시");
 //		for(int i=0 ;i< attackTrace.size(); i++) {
@@ -278,7 +382,7 @@ public class Main {
 						if(i!=attackTrace.size()-1) {
 							//1/2로 경로에 있는 애들 공격력 줄이고
 							targetTurret.attack -= attacker.attack/2;
-							if(targetTurret.attack<0) {
+							if(targetTurret.attack<=0) {
 								targetTurret.attack = 0;
 								turretList.remove(targetTurret);
 								i--;
@@ -286,7 +390,7 @@ public class Main {
 						}else {
 							//target은 공격력 만큼 줄이고 
 							targetTurret.attack -= attacker.attack;
-							if(targetTurret.attack<0) {
+							if(targetTurret.attack<=0) {
 								targetTurret.attack = 0;
 								turretList.remove(targetTurret);
 								i--;
@@ -345,7 +449,7 @@ public class Main {
 			}
 			
 		}
-		return null;
+		return new ArrayList<int[]>();
 	}
 	
 	//아 내부에 static영역이라 static으로 해줘야 하는구나
