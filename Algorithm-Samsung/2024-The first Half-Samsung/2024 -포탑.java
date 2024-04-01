@@ -1,60 +1,3 @@
- * N x M 격자
- * 각 포탑에 공격력 존재, if 포탑 공격력 <=0 포탑은 부서짐
- * 최초로 공격력이 0인 포탑이 존재할 수 있다.
- * 
- * 하나의 턴은 다음 4가지 액션을 순서대로 수행하며, 총 K번 반복된다.
- * 1. 공격자 선정
- * 가장 약한 포탑 (가장 작은 수) 선정 
- * 선정시 - N + M 만큼의 공격력이 증가된다. 
- * 
- * 가장 약한 포탑 선정 기준 
- *   1.1 공격력이 가장 낮은 포탑
- *   1.2 2개 이상이라면 가장 최근에 공격한 포탑 (모든 포탑은 시점 0에는 모두 공격한 경험이 있다)
- *   1.3 각 포탑의 위치의 행과 열의 합이 가장 큰 포탑
- *   1.4 열 값이 가장 큰 포탑이 약한 포탑
- *   
- *   
- * 2. 공격자의 공격
- * 자신을 제외한 가장 강한 포탑을 공격 
- *   
- * 가장 강한 포탑 선정 기준 
- *   2.1 공격력이 가장 높은 포탑이 가장 강한 포탑
- *   2.2 if 2개 이상 -> 공격한지 가장 오래된 포탑 time이 오래된 것
- *   2.3 행과 열의 합기 가장 작은 포탑
- *   2.4 열 값이 가장 작은 포탑
- *   
- * 공격에는 2 가지 공격 존재 
- * (1) 레이저 공격
- *  1. 상하좌우 4개의 방향으로 움직일 수 있다
- *  2. 부서진 포탑이 있는 위치는 지날 수 없다
- *  3. 가장자리에서 막힌 방향으로 진행하면 반대편으로 나온다 (주기 경계)
- * 
- * 레이저는 공격자의 위치에서 공격 대상까지 최단 경로로 공격
- * 만약 경로가 존재하지 않는다면 포탄 공격을 함
- * 
- * 그리고 만약 최단 경로가 2개 이상이라면, 우/하/좌/상 우선순위로 움직인다.
- * 대상은 공격력만큼 줄어들고
- * 경로에 있는 포탑은 공격자 공격력의 절반만큼 피해를 받음
- * 
- * 
- * (2) 포탄 공격
- *  1. 공격 대상에 포탄을 던진다. 공격 받은 대상 주의 8개 방향으로 포탑도 피해를 입는다
- *  (대신 주변 8개는 공격자의 절반 만큼 피해를 받는다) 
- *  * 단, 공격자는 해당 공격에 영향을 받지 않는다. 
- *  (여기도 주기적 경계조건이 됨)
- * 
- * 
- * 3. 포탑 부서짐
- *  공격을 받아 공격력이 0 이하가 된 포탑은 부서진다
- * 
- * 
- * 4. 포탑 정비
- *  공격이 끝나면, 부서지지 않은 포탑 중 공격과 무관했던 포탑은 공격력이 1씩 증가
- *  공격과 무관하다는 것은 공격자도 아니고 공격에 피해를 입은 포탑도 아니라는 뜻
- *  
- * 
- * */
-
 import java.util.*;
 
 class Turret{
@@ -93,9 +36,11 @@ public class Main {
 	
 	static int N, M, K;
 	static Turret[][] board;
+	static int[][] plusBoard;
 	static List<Turret> turretList = new ArrayList<>(); //포탑이 죽으면 List에서 제거하는 식으로 가자.
-	static int[] dx = {0, 1,0,-1}, dy = {1,0,-1,0}; //우하좌상
-	static int[] dx2 = {-1,-1,-1, 0, 1, 1, 1, 0}, dy2 = {-1,0,1,1,1,0,-1,-1}; //8방향
+//	static int[] dx = {0, 1,0,-1}, dy = {1,0,-1,0}; //우하좌상
+//	static int[] dx2 = {-1,-1,-1, 0, 1, 1, 1, 0}, dy2 = {-1,0,1,1,1,0,-1,-1}; //8방향
+    private static int[] dx = {0,1,0,-1,-1,-1,1,1}, dy = {1,0,-1,0,-1,1,-1,1};
 	static List<int[]> involved;
 	static int answer;
 
@@ -104,7 +49,37 @@ public class Main {
 	public static void print2D(Turret[][] board) {
 		for(int i=0; i<board.length; i++) {
 			for(int j=0; j<board[0].length; j++) {
-				System.out.print(board[i][j]);
+				System.out.printf("%04d  ", board[i][j].attack);
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void monitor(List<int[]> trace, int N, int M, Turret attacker, Turret target) {
+		 int[][] monitor = new int[N][M];
+		 
+		 for(int i=0; i<trace.size() ; i++) {//주변 2 target 3 attack 1
+			 int[] coord = trace.get(i);
+			 monitor[coord[0]][coord[1]] =2;
+		 }
+		 monitor[attacker.x][attacker.y] = 1;
+		 monitor[target.x][target.y] = 3;
+		
+		for(int i=0; i<board.length; i++) {
+			for(int j=0; j<board[0].length; j++) {
+				
+				System.out.printf("%01d  ", monitor[i][j]);
+
+				
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void printPlus(int[][] plusBoard) {
+		for(int i=0; i<plusBoard.length; i++) {
+			for(int j=0; j<plusBoard[0].length; j++) {
+				System.out.printf("%01d  ", plusBoard[i][j]);
 			}
 			System.out.println();
 		}
@@ -120,6 +95,7 @@ public class Main {
 		K = sc.nextInt();
 		
 		board = new Turret[N][M];
+		plusBoard = new int[N][M];
 		
 		for(int i=0; i<N; i++) {
 			for(int j=0; j<M; j++) {
@@ -138,7 +114,7 @@ public class Main {
 		//원래는 여기 Test Case T가 붙어 있다. 
 		
 		//총 4가지 action이 K번 반복 (전체 횟수) 
-		
+		int time=1;
 		for(int i=0; i<K; i++) {
 			//공격자 선정
 			Turret attacker = selectTurret(board, turretList);
@@ -146,16 +122,12 @@ public class Main {
 			
 			//공격자의 공격
 			attackerAttack(attacker, turretList);
-			
-			
-			//포탑 부서짐
-			
-			
-			//포탑 정비
-			
-			//마지막 포탑
-//			System.out.println(countLiveTurret());
+
 			if(countLiveTurret()==1) break;
+			
+			attacker.time = time;
+			
+			time++;
 		}
 
 
@@ -191,7 +163,7 @@ public class Main {
 						}
 						return (o2.x+o2.y) - (o1.x+o1.y);
 					}
-					return o1.time- o2.time;
+					return o2.time- o1.time;
 				}
 				
 				return o1.attack - o2.attack;
@@ -224,7 +196,7 @@ public class Main {
 						}
 						return (o1.x+o1.y) - (o2.x+o2.y);
 					}
-					return o2.time- o1.time;
+					return o1.time- o2.time;
 				}
 				
 				return o2.attack - o1.attack;
@@ -245,44 +217,59 @@ public class Main {
 		
 		//선정 이후 레이저 공격
 
+
+
+		System.out.println(" ");
 		System.out.println(" 이전  ");
-		System.out.println(turretList);
+		System.out.println("weakest   " + attacker);
 		print2D(board);
 
 		boolean bomb = laserAttack(attacker, strongest);
 //		print2D(board);
 		
-		if(bomb) explode(attacker, strongest);
+		if(bomb) {
+			System.out.println("Bomb!!!!!!!!!!!!!!!!!!!!!!!");
+			explode(attacker, strongest);
+		}
 		
 		
 		//여기서 attack한 포탑 외에 모두 time을 +1을 해줘야 한다. 
-		plusTime(attacker);
+//		plusTime(attacker);
 		
 		//포탑 정비
-		System.out.println(" 이후  ");
-		System.out.println("strongetst" +  strongest);
-		print2D(board);
-		System.out.println("  ");
 		organize(attacker, strongest);
 		
-		System.out.println(" final  ");
+		System.out.println(" 이후 ");
+		System.out.println("strongetst" +  strongest);
+		
+		System.out.println("  ");
 		print2D(board);
+		System.out.println("  ");
+
+		monitor(involved, N, M, attacker, strongest);
+		System.out.println("  ");
+		System.out.println(" PLUS ");
+		printPlus(plusBoard);
+		System.out.println("  ");
+		
+//		System.out.println(" final  ");
+//		print2D(board);
 		
 	}
 	
-	public static void plusTime(Turret attacker) {
-			
-		for(int i=0; i<N; i++) {
-			for(int j=0; j<M; j++) {
-				Turret turret = board[i][j];
-				if(turret != attacker) {
-					turret.time ++;
-				}
-			}
-		}
-		attacker.time=0;
-		
-	}
+//	public static void plusTime(Turret attacker) {
+//			
+////		for(int i=0; i<N; i++) {
+////			for(int j=0; j<M; j++) {
+////				Turret turret = board[i][j];
+////				if(turret != attacker) {
+////					turret.time ++;
+////				}
+////			}
+////		}
+//		attacker.time++;
+//		
+//	}
 	
 	public static void organize(Turret attacker, Turret reciver) {
 		
@@ -291,9 +278,10 @@ public class Main {
 //			int[] element = involved.get(i);
 //			System.out.print(element[0] + " , " + element[1] + " | ");
 //		}
+//		System.out.println("  ");
 //		System.out.println(turretList);
 //		System.out.println("  ");
-//		
+		
 		//이 부분 다시 생각해 볼 필요가 있다.
 //		for(int i=0; i<turretList.size(); i++) {
 //			for(int j=0; j<involved.size(); j++) {
@@ -306,27 +294,43 @@ public class Main {
 //				break;
 //			}
 //		}
-		print2D(board);
+//		print2D(board);
+		
+		involved.add(new int[] {attacker.x, attacker.y});
 
+		int[][] newBoard = new int[N][M];
 		for(int i=0; i<N; i++) {
 			for(int j=0; j<M; j++) {
+				
 				Turret turret = board[i][j];
 				boolean add = true;		
 				for(int k=0; k<involved.size(); k++) {
-					//하나씩 다 해주는게 제일 안전함.
-					if(turret.x == involved.get(k)[0] && turret.y == involved.get(k)[1] ) break;
-					if(turret.attack ==0) break;
-					if(attacker.x == i && attacker.y == j) break; //만약 여기서 != 조건으로 하기 위해서는?
-//					System.out.println("과연 들   " + attacker  +  "  " +  i +  "  , " +   j + "   " + involved.get(k)[0] + "    " +  involved.get(k)[1]);
-
-					turret.attack++;
-					break;
-				}
+					//하나씩 다 해주는게 제일 안전함.	
+					if(turret.x == involved.get(k)[0] && turret.y == involved.get(k)[1] ) {
+						add = false;
+						break; //말이 안됐던게 다 돌아보고 나서 했어야함. 로직이 잘못됨
+					}
 					
-
+		
+				}
+				
+				if(turret.attack <=0) {
+					add = false;
 				}
 
+				if(add && involved.size()!=0) { //involved가 0일때
+					turret.attack++;
+					newBoard[i][j] = 1;
+					
+					add = false;
+					//break; 여기서 break해버리면 2중 for loop에서 끊어져버림.
+				}
+
+				}
+			
 			}
+		
+		plusBoard = newBoard;
 		
 	
 		Collections.sort(turretList, new Comparator<Turret>() {
@@ -343,16 +347,32 @@ public class Main {
 	
 	public static void explode(Turret attacker, Turret target) {
 		
-		for(int i=0; i<8; i++) {
-			int new_x = (N+target.x + dx2[i])%N;
-			int new_y = (M+target.y + dy2[i])%M;
+		//여기서 new_x, new_y involved에 안넣었다.
+		
+		List<int[]> intArray = new ArrayList<>();
+		
+		for(int i=0; i<8; i++) { //여기서 자기 자신꺼 안뺌.. attacker꺼
+			int new_x = (N+target.x + dx[i])%N;
+			int new_y = (M+target.y + dy[i])%M;
+			if(board[new_x][new_y] == attacker) continue; //이거 한 줄 이거 리뷰 한 번 써보자
 			if(board[new_x][new_y].attack==0) continue;
 			board[new_x][new_y].attack -= attacker.attack/2;
-			if(board[new_x][new_y].attack<0) board[new_x][new_y].attack=0;
+			if(board[new_x][new_y].attack<=0) board[new_x][new_y].attack=0;
+			if(board[new_x][new_y].attack<=0) {
+				board[new_x][new_y].attack = 0;
+				turretList.remove(board[new_x][new_y]);
+			}	
+			intArray.add(new int[] {new_x, new_y});
 		}
 		
 		target.attack-=attacker.attack;
-		if(target.attack<0) target.attack = 0;
+		if(target.attack<0) {
+			target.attack = 0;
+			turretList.remove(target);
+		}
+		intArray.add(new int[] {target.x, target.y});
+		
+		involved = intArray;
 		
 	}
 	
