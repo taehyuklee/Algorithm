@@ -106,22 +106,28 @@ public class Main {
 			}
 		}
 		
-//		print2D(board);
-//		System.out.println(turretList);
-		
-		
-		
+
 		//원래는 여기 Test Case T가 붙어 있다. 
 		
 		//총 4가지 action이 K번 반복 (전체 횟수) 
 		int time=1;
 		for(int i=0; i<K; i++) {
 			//공격자 선정
-			Turret attacker = selectTurret(board, turretList);
-			
+			Turret attacker = pickWeakest(board, turretList);
+			attacker.attack += N+M;
 			
 			//공격자의 공격
-			attackerAttack(attacker, turretList);
+			Turret strongest = pickStrongest(attacker, turretList);
+			
+			//선정 이후 레이저 공격
+			boolean bomb = laserAttack(attacker, strongest);
+			if(bomb) {
+				explode(attacker, strongest);
+			}
+			
+			//여기서 attack한 포탑 외에 모두 time을 +1을 해줘야 한다. 
+			//포탑 정비
+			organize(attacker, strongest);
 
 			if(countLiveTurret()==1) break;
 			
@@ -149,7 +155,7 @@ public class Main {
 		return N*M-cnt;
 	}
 	
-	public static Turret selectTurret(Turret[][] board, List<Turret> turretList) {
+	public static Turret pickWeakest(Turret[][] board, List<Turret> turretList) {
 		//부서지지 않은 포탑 중 가장 약한 포탑 공격자로 선정 
 		
 		Collections.sort(turretList, new Comparator<Turret>(){
@@ -170,19 +176,22 @@ public class Main {
 			}
 			
 		});
-		
 		Turret weakest = turretList.get(0);
-		//System.out.println(weakest);
-		
-		
-		//공격력 N+M 증가 
-		weakest.attack += N+M;
-		
-		//print2D(board);
+//		System.out.println(weakest);
+//		for(int i=0; i<turretList.size(); i++) {
+//			Turret weakest = turretList.get(i);
+//			if(weakest.attack !=0) {
+//				return weakest;
+//			}else {
+//				continue;
+//			}
+//		}
+//
+//		return null;
 		return weakest;
 	}
 	
-	public static void attackerAttack(Turret attacker, List<Turret> turretList){
+	public static Turret pickStrongest(Turret attacker, List<Turret> turretList){
 		
 		// 자신을 제외한 가장 강한 포탑 선졍 (자신 제외)
 		Collections.sort(turretList, new Comparator<Turret>(){
@@ -206,70 +215,18 @@ public class Main {
 		
 		//자기 자신 제외한 나머지 포탑중 
 		Turret strongest;
-		if(turretList.get(0) == attacker) {
-			strongest = turretList.get(1);
-		}else {
-			strongest = turretList.get(0);
+		for(int i=0; i<turretList.size(); i++) {
+			if(turretList.get(i) == attacker) {
+				continue;
+			}else if(turretList.get(i).attack == 0) {
+				continue;
+			}else {
+				return turretList.get(i);
+			}
 		}
-		
-		//확인 과정. 
-//		System.out.println(strongest);
-		
-		//선정 이후 레이저 공격
-
-
-
-		System.out.println(" ");
-		System.out.println(" 이전  ");
-		System.out.println("weakest   " + attacker);
-		print2D(board);
-
-		boolean bomb = laserAttack(attacker, strongest);
-//		print2D(board);
-		
-		if(bomb) {
-			System.out.println("Bomb!!!!!!!!!!!!!!!!!!!!!!!");
-			explode(attacker, strongest);
-		}
-		
-		
-		//여기서 attack한 포탑 외에 모두 time을 +1을 해줘야 한다. 
-//		plusTime(attacker);
-		
-		//포탑 정비
-		organize(attacker, strongest);
-		
-		System.out.println(" 이후 ");
-		System.out.println("strongetst" +  strongest);
-		
-		System.out.println("  ");
-		print2D(board);
-		System.out.println("  ");
-
-		monitor(involved, N, M, attacker, strongest);
-		System.out.println("  ");
-		System.out.println(" PLUS ");
-		printPlus(plusBoard);
-		System.out.println("  ");
-		
-//		System.out.println(" final  ");
-//		print2D(board);
-		
+		return null;
 	}
 	
-//	public static void plusTime(Turret attacker) {
-//			
-////		for(int i=0; i<N; i++) {
-////			for(int j=0; j<M; j++) {
-////				Turret turret = board[i][j];
-////				if(turret != attacker) {
-////					turret.time ++;
-////				}
-////			}
-////		}
-//		attacker.time++;
-//		
-//	}
 	
 	public static void organize(Turret attacker, Turret reciver) {
 		
@@ -366,7 +323,7 @@ public class Main {
 		}
 		
 		target.attack-=attacker.attack;
-		if(target.attack<0) {
+		if(target.attack<=0) { //여기 설마..
 			target.attack = 0;
 			turretList.remove(target);
 		}
