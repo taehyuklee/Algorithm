@@ -96,13 +96,18 @@ public class Main {
 	static List<Santa> playerList;
 	
 	public static void print2D(List<Santa>[][] board) {
+		System.out.println("deer " + deer);
 		for(int i=0; i<board.length; i++) {
 			for(int j=0; j<board[0].length; j++) {
-				if(board[i][j].size() == 0) {
+				if(i==deer.x && j==deer.y){
+					System.out.print(-1 + " ");
+				}else if(board[i][j].size() == 0) {
 					System.out.print(0 + " ");
-				}else {
+				}
+				else {
 					System.out.print(board[i][j].get(0).num + " ");
 				}
+				
 			}
 			System.out.println();
 		}
@@ -149,34 +154,39 @@ public class Main {
 	public static void solution() {
 		
 		for(int turn=1; turn<=M; turn++) {
-//			System.out.println(turn + "번째 턴입니다");
+			System.out.println("\n" +turn + "번째 턴입니다");
+			System.out.println("루돌프 정보 : " + deer);
+			print2D(board);
+
 			//루돌프의 움직임
 			moveDeer();
-//			System.out.println("루돌프 정보 : " + deer);
 			//루돌프가 산타 충돌 확인
 			Santa deerToSanta = checkChungDol(null, deer.x, deer.y);
 			if(deerToSanta !=null) {
 				boom(deerToSanta, 0);
 			}
+			System.out.println("루돌프 움직인 이후 ");
+			print2D(board);
 			
 			//산타의 움직임
 			moveSanta();
 			//산타가 루돌프 충돌 확인 (이건 moveSanta내부로 들어가야 한다 player가 많기 때문에)
-
-//			print2D(board);
+			System.out.println("산타 움직인 이후 ");
+			print2D(board);
 					
 			//점수주기 및 스턴 1턴씩 감소시켜주기
 			plusOneScoreAndMinusStun();
 
 
 //			System.out.println("장외 플레이어 확인");
-//			System.out.println(playerList);
-//			for(int i=0; i<playerList.size(); i++) {
-//				System.out.print(playerList.get(i).score + " ");
-//			}
-//			System.out.println();
+			System.out.println(playerList);
+			for(int i=0; i<playerList.size(); i++) {
+				System.out.print(playerList.get(i).score + " ");
+			}
+			System.out.println();
 			
 			//마지막 종료조건 체크
+			if(checkEnd()) break;
 
 		}
 		
@@ -391,7 +401,7 @@ public class Main {
 			break;
 		}
 		
-//		System.out.println("target player 확인 : " + target);
+		System.out.println("target player 확인 : " + target);
 		
 		//루돌프 움직일 방향 정해서 움직이기 
 		List<int[]> dirList = new ArrayList<>();
@@ -433,7 +443,19 @@ public class Main {
 		}
 	}
 
-
+	public static boolean checkEnd() {
+		int cnt=0;
+		for(int i=0; i<playerList.size(); i++) {
+			if(playerList.get(i).out == true) {
+				cnt++;
+			}
+		}
+		if(cnt == P) {
+			return true;
+		}
+		return false;
+	}
+	
 	/* 공통 유틸 */
 	public static void orderSanta() {
 		Collections.sort(playerList, new Comparator<Santa>() {
@@ -471,7 +493,7 @@ public class Main {
 	}
 
 	public static boolean measureDist(int newDistance, int oldDistance) {
-		if(oldDistance<=newDistance) { //루돌프로부터 가까워질 수 있는 방법이 없다면 (이 부분 다시 체크)
+		if(oldDistance<newDistance) { //루돌프로부터 가까워질 수 있는 방법이 없다면 (이 부분 다시 체크)
 			return true;
 		}
 		return false;
