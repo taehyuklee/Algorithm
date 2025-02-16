@@ -92,12 +92,24 @@ print(python_list)
 '''
 Python에서는 Map구조를 Dictionary라는 자료구조로 명명해서 사용하고 있다. 
 '''
-python_map = {}
+python_map = {"100": "good"}
 
+# Dictionary 새로운 key value 추가 하는 방법
 python_map["1"] = "1"
+python_map["2"] = "1"
+python_map["100"] = "1" # 해당 value로 덮어 씌어진다.
+
+# Dictionary 기존 key 삭제 
+del python_map["1"]
+
+str_python : str = "hello world"
+
+
 
 print(python_map)
 print(type(python_map))
+
+
 
 
 
