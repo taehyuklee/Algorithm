@@ -119,7 +119,11 @@ print(dict1)
 
 
 
-# Dequeue
+# Dequeue (Queue로 양방향 Queue를 많이 사용한다)
+from collections import deque
+
+
+
 
 
 
