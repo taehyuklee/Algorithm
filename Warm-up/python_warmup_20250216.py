@@ -95,21 +95,27 @@ Python에서는 Map구조를 Dictionary라는 자료구조로 명명해서 사�
 python_map = {"100": "good"}
 
 # Dictionary 새로운 key value 추가 하는 방법
-python_map["1"] = "1"
+python_map["1"] = "shot"
 python_map["2"] = "1"
 python_map["100"] = "1" # 해당 value로 덮어 씌어진다.
-
-# Dictionary 기존 key 삭제 
-del python_map["1"]
-
-str_python : str = "hello world"
-
-
-
 print(python_map)
-print(type(python_map))
+
+# print(python_map.get("1"))
+# print(python_map["1"])
+# Dictionary 기존 key 삭제 (del은 반환이 아니라 내부의 변수를 삭제해버림)
+# del python_map["1"]
+
+pop_data = python_map.pop("1")
+print(pop_data)
+print(python_map)
 
 
+#dictionary 결합
+dict1 = {"100": "good"}
+dict2 = {"200": "good2"}
+dict1.update(dict2)
+
+print(dict1)
 
 
 

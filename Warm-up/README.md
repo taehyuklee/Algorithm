@@ -56,7 +56,6 @@ Python의 List에서 특정 위치의 값을 제거하고 싶을때 pop을 이�
 <b>index 접근, 맨 처음, 마지막 O(1), 중간 index O(N) 특징을 갖는다.</b>
 
 ``` python
-#
 python_list = [1,2,3,4,5,6,7,999]
 pop_data1 = python_list.pop() # 마지막 index가 pop됨. 
 pop_data2 = python_list.pop(3) # 3번째 index내용이 pop됨.
@@ -88,18 +87,56 @@ print(pop_data)
 
 
 <h3> Python Map (Dictionary) </h3>
-'''
-Python에서는 Map구조를 Dictionary라는 자료구조로 명명해서 사용하고 있다. 
-'''
 
+Python에서는 HashMap구조를 Dictionary라는 자료구조로 명명해서 사용하고 있다. 사용법을 알아보자.
+
+<br>
+
+### 1. put (push)
+어차피 중복되지 않기때문에 중복된 key가 들어가면 해당 value로 엎어쳐진다.
 ```python
 python_map = {}
 
-python_map["1"] = "1"
+python_map["key"] = "value"
 
-print(python_map)
-print(type(python_map))
 ```
+<br>
+
+### 2. del & pop (remove)
+```python
+python_map = {"key1":"value1", "key2":"value2"}
+
+# del method
+# del은 아예 참조 변수를 없애기때문에 Value를 반환하지 않는다.
+del python_map["key1"]
+
+# Result del
+{"key2":"value2"}
+
+# - pop method
+# pop method는 해당 객체의 key에 해당되는 value를 반환하고 삭제된다.
+return_data = python_map.pop("key2")
+print(return_data)
+
+# Result pop
+value2
+
+```
+<br>
+
+
+### 3. update (dictionary 결합)
+두개의 dictionary를 결합한다.
+```python
+dict1 = {"100": "good"}
+dict2 = {"200": "good2"}
+dict1.update(dict2)
+
+# Result 
+{'100': 'good', '200': 'good2'}
+```
+
+
 <br><br>
 
 
