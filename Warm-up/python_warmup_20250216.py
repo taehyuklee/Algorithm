@@ -120,10 +120,35 @@ print(dict1)
 
 
 # Dequeue (Queue로 양방향 Queue를 많이 사용한다)
-from collections import deque
+from collections import deque # (FIFO 구조)
+
+Q = deque()
+
+Q.append([1,2])
+Q.append([2,3])
+Q.append([3,4])
+
+x, y = Q.popleft()
+
+print(Q)
+
+print(x)
+print(y)
+
+# ---------- 위와같이 Queue구조로 사용할 수 있다 ------------- #
+Q1 = deque()
+Q1.appendleft([1,2])
+Q1.appendleft([2,3])
+
+x,y = Q1.pop() # 마지막 index꺼를 pop한다.
+
+print(x)
+print(y)
 
 
 
+
+# sort 정렬 
 
 
 
