@@ -150,6 +150,18 @@ print(y)
 
 # sort 정렬 
 
+sort_before_list = [(1, "apple"), (5, "cocktail"), (2, "shoot"),(7, "apply"), (3, "goodbye")]
+
+def sorting (element_list):
+    return element_list[1]
+
+# sort_before_list.sort(key=sorting)
+
+sorted(sort_before_list, key=lambda x: x[0])
+# lambda 기법에 익숙하다면 할 수 있다. 
+
+print(sort_before_list)
+
 
 
 

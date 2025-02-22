@@ -141,6 +141,16 @@ dict1.update(dict2)
 
 
 <h3> Python Queue (Dequeue) </h3>
+FIFO (First In First Out)을 사용하기 위해서는 두 가지 형태를 추천한다 그 중에서는 내가 많이 사용했던 방법을 쓴다.
+
+### 1. append() & popleft()
+어차피 중복되지 않기때문에 중복된 key가 들어가면 해당 value로 엎어쳐진다.
+```python
+python_map = {}
+
+python_map["key"] = "value"
+
+```
 
 <br>
 
