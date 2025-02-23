@@ -165,4 +165,47 @@ print(sort_before_list)
 
 
 
-# Python 문자열 출력 방식 
+# Python 문자열 출력 방식 (입력)
+'''
+7 4
+0 0 0 2 3 2 3
+1 2 3 1 2 3 1
+2 3 1 2 3 1 2
+1 2 3 0 2 3 1
+2 3 1 2 3 1 2
+3 1 2 3 1 2 3
+1 2 3 1 2 3 1
+1 3
+2 2
+3 1
+4 3
+'''
+
+# 공백 기준 입력 받기
+# Python의 input은 readline 한줄씩 읽어 온다.
+# Java에서 처럼 Scanner sc = new Scanner(); sc.nextInt(); 이런게 없다. 무조건 br.readline(); 또는 sc.nextLine() 개행문자까지 가져옴 처럼 된다.
+'''
+list_str = input().split() # 한줄씩 읽으므로 .split()을 써서 공백으로 split해줘야 한다. 본래는 string형태의 list가 반환된다. 
+N, M = map(int, list_str)
+'''
+# 위에 있는 두 줄이 합쳐져서 아래와 같이 된다.
+N, M = map(int, input().split())
+# print(N)
+# print(M)
+
+# print([0] * N) # 파이썬 만의 문법이다. 
+
+
+# Python에는 사실 배열 개념이 존재하지는 않는다. 이중 List형태일뿐. 다만 index접근은 가능하게 해놓음.
+# board = [[] for _ in range(N)]
+# for i in range(N):
+#     line = list(map(int, input().split()))
+#     for j in range(N):
+#         board[i].append(line[j])
+
+# print(board)
+
+# comprehension으로 한 번에 
+board_final = [list(map(int, input().split())) for _ in range(N)]
+
+print(board_final)
