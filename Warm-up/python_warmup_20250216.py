@@ -209,3 +209,20 @@ N, M = map(int, input().split())
 board_final = [list(map(int, input().split())) for _ in range(N)]
 
 print(board_final)
+
+
+
+# Python Output
+name = "John"
+age = 30
+print("My name is %s and I am %d years old." % (name, age))
+
+
+name = "John"
+age = 30
+print(f"My name is {name} and I am {age} years old.")
+
+
+name = "John"
+age = 30
+print("My name is {} and I am {} years old.".format(name, age))
