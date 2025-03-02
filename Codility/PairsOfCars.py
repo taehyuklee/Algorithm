@@ -48,3 +48,28 @@ def solution(A):
         sum_answer+=answer
 
     return sum_answer
+
+
+
+########## 예외 조건 ############
+def solution(A):
+    python_list = []
+    answer=0
+    sum_answer = 0
+
+    for i in range(len(A)):
+        if A[i] == 0:
+            python_list.append([])
+            python_list[len(python_list)-1].append(0)
+        else:
+            python_list[len(python_list)-1][0] += 1
+
+    # print(python_list)
+    for i in range(len(python_list)-1, -1, -1):
+        answer = python_list[i][0] + answer
+        sum_answer+=answer
+
+    if sum_answer > 1000000000:
+        return -1
+        
+    return sum_answer
