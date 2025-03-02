@@ -76,7 +76,7 @@ def solution(A):
 
 
 
-#### 시작이 1일때 ####
+#### 시작이 1일때 #### 이건 필요 없는 조건 P<Q 임을 기억하자
 def solution(A):
     python_list = []
     answer=0
@@ -95,6 +95,30 @@ def solution(A):
     for i in range(len(python_list)-1, -1, -1):
         answer = python_list[i][0] + answer
         sum_answer+=answer
+
+
+##### 2025-03-02 20:29 #####
+    def solution(A):
+    python_list = []
+    answer=0
+    sum_answer = 0
+
+    for i in range(len(A)):
+        if A[i] == 0:
+            python_list.append([])
+            python_list[len(python_list)-1].append(0)
+        else:
+            if python_list:
+                python_list[len(python_list)-1][0] += 1
+
+    for i in range(len(python_list)-1, -1, -1):
+        answer = python_list[i][0] + answer
+        sum_answer+=answer
+
+    if sum_answer > 1000000000:
+        return -1
+        
+    return sum_answer
 
     if sum_answer > 1000000000:
         return -1
