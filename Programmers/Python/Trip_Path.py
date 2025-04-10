@@ -62,3 +62,5 @@ def solution(tickets):
     travle(port_dict, visit_dict, start_point, answer, cur_depth, tot_depth)
 
     return final_answer
+
+## 여기서 배운건 visit을 넣어서 for loop에서 이미 방문한건 다시 방문하지 않도록 해야한다. (Key Point visit)
