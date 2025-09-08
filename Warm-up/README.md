@@ -156,3 +156,29 @@ python_map["key"] = "value"
 
 
 <h3> Python Output </h3>
+
+
+### Python sort
+Python에서의 여러개 기준으로 정렬하는 방법
+
+```python
+sort_before_list = [(1, "apple", 100), (5, "cocktail", 30), (2, "shoot", 20),(7, "apply", 50), (3, "goodbye", 40),  (1, "goodbye", 50)]
+
+# lambda를 사용하면 여러개 기준으로 정렬할 수 있다.(deep copy해서 복제한다)
+sort_after_list = sorted(sort_before_list, key=lambda x: (-x[0], x[2], x[1]))
+
+#또는 python sort (해당 객체 자체를 바꿔버린다. 복제X)
+sort_before_list.sort(key=lambda x: (-x[0], x[2], x[1]))
+
+print(sort_after_list)
+
+```
+참고로, str() type은 순방향은 위에서처럼 가능하나, -로 역정렬은 불가능하다. 따라서 reverse=True라는 argument를 추가로 넣어야 한다.
+
+```python
+sort_after_list = sorted(sort_before_list, key=lambda x: x[1], reverse=True)
+
+```
+
+
+<br><br>
