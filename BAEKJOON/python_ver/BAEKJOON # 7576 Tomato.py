@@ -21,6 +21,7 @@ print(start_list)
 
 def bfs(start_list):
     Q = deque()
+    max_cnt = 0
 
     for start_p in start_list:
         x, y = start_p
@@ -30,6 +31,8 @@ def bfs(start_list):
 
     while Q:
         x, y, cnt = Q.popleft()
+
+        max_cnt = max(max_cnt, cnt)
 
         for direct in range(4):
             new_x = x + dx[direct]
@@ -43,5 +46,8 @@ def bfs(start_list):
                 new_cnt = cnt + 1
 
                 Q.append([new_x, new_y, new_cnt])
+    return max_cnt
 
-bfs(start_list)
+day = bfs(start_list)
+
+print(day)
