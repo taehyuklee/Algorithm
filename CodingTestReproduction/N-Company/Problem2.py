@@ -1,4 +1,3 @@
-# Naver Cloud Coding Test
 '''
 # N Strings
 S = []
