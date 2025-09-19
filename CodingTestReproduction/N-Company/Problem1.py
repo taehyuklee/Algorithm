@@ -1,4 +1,3 @@
-# Naver Cloud Coding Test
 '''
 Given First Case
 A = [3, 1, 5, 3, 3, 4, 2]
