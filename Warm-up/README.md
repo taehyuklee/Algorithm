@@ -248,6 +248,7 @@ return_upper = string_1.upper()
 #Output: HELLO WORLD
 ```
 
+<br>
 
 ### Python 내장 Set 이용
 1. list to set
@@ -277,8 +278,8 @@ set3 = set1.union(set2)
 # 자기 자신 Update
 set1.update(set2)
 ```
-
 <br>
+
 3. set 차집합
 
 ```python
