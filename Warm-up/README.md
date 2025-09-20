@@ -234,3 +234,56 @@ if "hello" in string_1:
 #Output: True / "yo"
 ```
 
+
+### Python 내장 Set 이용
+1. list to set
+   
+```python
+list1 = ["a", "b", "c", "d"]
+list2 = ["a", "d", "e"]
+
+set1 = set(list1)
+set2 = set(list2)
+
+# Output: {'a', 'b', 'c', 'd'}
+# Output: {'a', 'd', 'e'}
+```
+
+<br>
+2. set 합집합
+
+```python
+set1 = {'a', 'b', 'c', 'd'}
+set2 = {'a', 'd', 'e'}
+
+# 합집합 새로운 집합 반환
+set3 = set1 | set2
+set3 = set1.union(set2)
+
+# 자기 자신 Update
+set1.update(set2)
+```
+
+<br>
+3. set 차집합
+
+```python
+# 차집합 새로운 집합 반환
+set3 = set1 - set2
+set3 = set1.difference(set2)
+
+# 자기 자신 Update
+set1.difference_update(set2)
+```
+
+<br>
+4. set 교집합
+
+``` python
+# 교집합 새로운 집합 변환
+set3 = set1 & set2
+set3 = set1.intersection(set2)
+
+# 자기 자신 update
+set1.intersection_update(set2)
+```
