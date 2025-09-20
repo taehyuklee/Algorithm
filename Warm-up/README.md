@@ -173,6 +173,7 @@ sort_before_list.sort(key=lambda x: (-x[0], x[2], x[1]))
 print(sort_after_list)
 
 ```
+
 참고로, str() type은 순방향은 위에서처럼 가능하나, -로 역정렬은 불가능하다. 따라서 reverse=True라는 argument를 추가로 넣어야 한다.
 
 ```python
@@ -182,3 +183,54 @@ sort_after_list = sorted(sort_before_list, key=lambda x: x[1], reverse=True)
 
 
 <br><br>
+
+### Python Strings
+Python에서 문자열 문제가 나왔을때 Parsing/포함여부/Substring/접두어 (시작)/Indexing/Count 등을 물어보는 문제가 있을 수 있다.
+해당 문제는 위 문법을 알면 풀 수 있지만 알지 못하면 바로 틀리는 문제임을 명심하라.
+
+1. ```str.startswith()``` method를 이용하면 아래와 같이 해당 문자열이 무엇으로 시작되는지 확인이 가능하다.
+```python
+# 어떤 문자로 시작하는지를 확인하기
+"123".startswith("12")
+
+# Output: True / False
+```
+
+<br>
+
+2. ```str.split(" ")``` method를 사용하면 split안에 들어가는 인자를 기준으로 쪼개서 list 반환이 가능하다
+```python
+string_1 = "1 2 3 4 5"
+string_2 = "1:2:3:4:5"
+
+string_1.split(" ")
+string_2.split(":")
+
+#Output: ['1','2','3','4','5']
+#Output: ['1','2','3','4','5']
+
+```
+
+<br>
+
+3. slicing ```str[i:j]``` 특정 문자열에서 일부만 떼고 싶다면 해당 접근방법을 사용하면 된다.
+```python
+string_1 = "12345"
+substring_1 = string_1[1:3]
+
+#Output: "234"
+```
+
+<br>
+
+4. 포함 여부를 확인하고자 한다면 ```"hello" in string_1"으로 하면 boolean 판단 가능.
+```python
+string_1 = "hello world"
+print("hello" in string_1)
+
+if "hello" in string_1:
+ print("yo")
+
+#Output: True / "yo"
+```
+
