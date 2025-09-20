@@ -234,6 +234,20 @@ if "hello" in string_1:
 #Output: True / "yo"
 ```
 
+<br>
+
+5. 문자열 소문자, 대문자
+```python
+string_1 = "Hello World"
+return_lower = string_1.lower()
+
+#Output: hello world
+
+return_upper = string_1.upper()
+
+#Output: HELLO WORLD
+```
+
 
 ### Python 내장 Set 이용
 1. list to set
