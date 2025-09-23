@@ -302,3 +302,69 @@ set3 = set1.intersection(set2)
 # 자기 자신 update
 set1.intersection_update(set2)
 ```
+
+<br>
+
+### 우선순위 queue - heapq (2진트리 자료구조)
+
+기본적으로 Python에서 heapq는 최소힙을 제공하고 있다.
+```python
+import heapq
+
+heap = []
+
+heapq.heappush(heap, 5)
+heapq.heappush(heap, 10)
+heapq.heappush(heap, 100)
+heapq.heappush(heap,30)
+heapq.heappush(heap,1000)
+
+for i in range(len(heap)):
+    print(heapq.heappop(heap))
+```
+<br>
+
+만약, 최대힙을 사용하고 싶다면 다음과 같이 사용하면 된다. 애시당초 음수를 붙여서 넣고
+음수를 붙여서 빼면 최댓값 기준으로 나오게 된다. 최소힙을 -를 붙임으로써 최대로 만들게 하는 것.
+
+```python
+import heapq
+
+heap = []
+
+heapq.heappush(heap, -5)
+heapq.heappush(heap, -10)
+heapq.heappush(heap, -100)
+heapq.heappush(heap, -30)
+heapq.heappush(heap, -1000)
+
+for i in range(len(heap)):
+    print(-heapq.heappop(heap))
+
+```
+
+<br>
+
+또한, list에 있는걸 바로 heap구조로 바꾸기 위해서는 다음과 같이 한다. ```heapfiy```사용
+```python
+# 최소 힙 사용
+list_up = [1,2,3,1,6,3,7,5,2,1,5]
+
+# 기존의 list를 바꾸게 된다.
+heapq.heapify(list_up)
+
+print(list_up)
+
+# 최대 힙 사용
+list_up = [1,2,3,1,6,3,7,5,2,1,5]
+
+list_up = [-x for x in list_up]
+
+heapq.heapify(list_up)
+
+for i in range(len(list_up)):
+    print(-heapq.heappop(list_up))
+
+```
+
+
