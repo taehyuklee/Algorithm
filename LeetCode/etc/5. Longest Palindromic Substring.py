@@ -21,6 +21,8 @@ class Solution:
                     if r-l+1 > res_len:
                         res = s[l:r+1]
                         res_len = len(res)
+                else: # pandlomic이 아니면 바로 빼야함.
+                    break
 
                 l -= 1
                 r += 1
@@ -35,8 +37,10 @@ class Solution:
                 if s[l] == s[r]:
                     if r-l+1 > res_len: # 만약 나중에 찾은 답으로 하고 싶다면 =을 넣어야함.
                         res = s[l:r+1]
-                        res_len = len(s)
-
+                        res_len = len(res) # s로 잘못함. res로 했어야하는데;;
+                else:
+                    # 예를 들어 "abbcccba" -> cc에서 -> bccc -> 그 다음 if문에 bbcccb가 됨. 근데 else break없으면 bccc에서 멈추지 않아버림.
+                    break
                 l -= 1
                 r += 1
 
