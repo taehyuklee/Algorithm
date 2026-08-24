@@ -32,3 +32,8 @@ class Solution:
 
         # print(list_answer)
         return list_answer
+
+'''
+처음에 정렬하지 않을 경우 Time Limit Exceeded
+315 / 316 testcases passed 가나옴 처음 정렬하면 굳이 같은 숫자 i를 매번 계산할 필요도 sort할 필요도 없다.
+'''
